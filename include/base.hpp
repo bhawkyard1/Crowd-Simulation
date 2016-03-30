@@ -5,13 +5,15 @@
 
 class base
 {
-  vec3 m_pos, m_ppos, m_vel;
+  vec3 m_pos;
+  vec3 m_ppos;
+  vec3 m_vel;
 public:
   void setPos(vec3 _pos) {m_pos = _pos;}
   vec3 getPos() {return m_pos;}
 
-  vec2 getPPos() {return prevPos;}
-  void setPPos(vec2 p) {prevPos = p;}
+  vec3 getPPos() {return m_ppos;}
+  void setPPos(vec3 p) {m_ppos = p;}
 
   void setVel(vec3 _vel) {m_vel = _vel;}
   void addVel(vec3 _vel) {m_vel += _vel;}

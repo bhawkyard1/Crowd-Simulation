@@ -1,5 +1,6 @@
 #include <iostream>
-#include "SDLOpenGL.hpp"
+#include <QtGui/QGuiApplication>
+#include "NGLScene.hpp"
 #include <ngl/NGLInit.h>
 #include <ngl/VAOPrimitives.h> //library with shapes i
 
@@ -13,75 +14,40 @@ void renderGL();
 int main(int argc, char * argv [])
 {
   //Create the simulation.
-  scene sim;
+  //scene sim;
 
-  initializeGL();
+  QGuiApplication app(argc, argv);
+  // create an OpenGL format specifier
+  QSurfaceFormat format;
+  // set the number of samples for multisampling
+  // will need to enable glEnable(GL_MULTISAMPLE); once we have a context
+  format.setSamples(4);
+  #if defined( __APPLE__)
+    // at present mac osx Mountain Lion only supports GL3.2
+    // the new mavericks will have GL 4.x so can change
+    format.setMajorVersion(4);
+    format.setMinorVersion(1);
+  #else
+    // with luck we have the latest GL version so set to that
+    format.setMajorVersion(4);
+    format.setMinorVersion(5);
+  #endif
+  // now we are going to set to CoreProfile OpenGL so we can't use and old Immediate mode GL
+  format.setProfile(QSurfaceFormat::CoreProfile);
+  // now set the depth buffer to 24 bits
+  format.setDepthBufferSize(24);
+  // set that as the default format for all windows
+  QSurfaceFormat::setDefaultFormat(format);
 
-  //Timer used to keep track of simulation time.
-  //The argument is the fps of the updates, higher = more detailed.
-  sim_time clock(120.0f);
+  // now we are going to create our scene window
+  NGLScene window;
 
-  //Is the simulation running?
-  bool active = true;
+  // we can now query the version to see if it worked
+  std::cout<<"Profile is "<<format.majorVersion()<<" "<<format.minorVersion()<<"\n";
+  // set the window size
+  window.resize(1024, 720);
+  // and finally show
+  window.show();
 
-  while(active == true)
-  {
-    SDL_Event event;
-    while(SDL_PollEvent( &event ))
-    {
-      switch(event.type)
-      {
-        case SDL_QUIT:
-          active = false;
-          break;
-        case SDL_KEYDOWN :
-            switch(event.key.keysym.sym)
-            {
-              case SDLK_ESCAPE :
-                active = false;
-                break;
-              case SDLK_w :
-                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-                break;
-              case SDLK_s :
-                glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-                break;
-            }
-        }
-    }
-
-    //Set current time (timer keeps track of time since cur time was last set).
-    clock.setCur();
-
-    //Update the game in small time-steps (dependant on the timers fps).
-    while(clock.getAcc() > clock.getFrame())
-    {
-      sim.update(clock.getDiff());
-      clock.incrAcc( -clock.getDiff() );
-    }
-
-    //Draw the game.
-    float diff_clamped = clock.getDiff();
-    if(diff_clamped == 0.0f) diff_clamped = 0.01f;
-    sim.draw( clock.getAcc() / diff_clamped );
-
-    //renderGL();
-
-    sim.renderSwap();
-  }
-  SDL_Quit();
-
-  return EXIT_SUCCESS;
-}
-
-void initializeGL()
-{
-   ngl::NGLInit::instance();
-   glClearColor(1.0, 0.0, 0.0, 1.0);
-   shader color("shaders/colorVertex.glsl", "shaders/colorFragment.glsl");
-}
-
-void renderGL()
-{
-   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  return app.exec();
 }
