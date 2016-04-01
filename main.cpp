@@ -1,4 +1,6 @@
 #include <iostream>
+#include <ciso646>
+
 #include <QtGui/QGuiApplication>
 #include "NGLScene.hpp"
 #include <ngl/NGLInit.h>

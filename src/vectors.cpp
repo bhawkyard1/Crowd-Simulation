@@ -1,3 +1,4 @@
+#include <ciso646>
 #include "vectors.hpp"
 
 vec2 operator +(const vec2 &lhs, const vec2 &rhs)

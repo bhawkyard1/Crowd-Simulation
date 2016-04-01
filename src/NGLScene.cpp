@@ -277,3 +277,8 @@ void NGLScene::keyPressEvent(QKeyEvent *_event)
   //if (isExposed())
     update();
 }
+
+void NGLScene::createShaderProgram(const std::string _name, const std::string _vert, const std::string _frag)
+{
+
+}

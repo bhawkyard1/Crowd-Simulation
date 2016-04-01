@@ -136,7 +136,7 @@ private:
     //----------------------------------------------------------------------------------------------------------------------
     void wheelEvent( QWheelEvent *_event);
 
-
+    void createShaderProgram(const std::string _name, const std::string _vert, const std::string _frag);
 };
 
 
