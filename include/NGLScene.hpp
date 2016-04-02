@@ -1,11 +1,16 @@
 #ifndef NGLSCENE_H__
 #define NGLSCENE_H__
 
+
 #include <ngl/Camera.h>
 #include <ngl/Colour.h>
 #include <ngl/Light.h>
 #include <ngl/Text.h>
+
 #include <QOpenGLWindow>
+
+//#include "scene.hpp"
+
 //----------------------------------------------------------------------------------------------------------------------
 /// @file NGLScene.h
 /// @brief this class inherits from the Qt OpenGLWindow and allows us to use NGL to draw OpenGL
@@ -137,6 +142,9 @@ private:
     void wheelEvent( QWheelEvent *_event);
 
 
+    void createShaderProgram(const std::string _name, const std::string _vert, const std::string _frag);
+
+    //scene m_sim;
 };
 
 

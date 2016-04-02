@@ -61,33 +61,11 @@ void NGLScene::initializeGL()
   glEnable(GL_MULTISAMPLE);
    // now to load the shader and set the values
   // grab an instance of shader manager
-  ngl::ShaderLib *shader=ngl::ShaderLib::instance();
-  // we are creating a shader called Phong
-  shader->createShaderProgram("Phong");
-  // now we are going to create empty shaders for Frag and Vert
-  shader->attachShader("PhongVertex",ngl::ShaderType::VERTEX);
-  shader->attachShader("PhongFragment",ngl::ShaderType::FRAGMENT);
-  // attach the source
-  shader->loadShaderSource("PhongVertex","shaders/PhongVertex.glsl");
-  shader->loadShaderSource("PhongFragment","shaders/PhongFragment.glsl");
-  // compile the shaders
-  shader->compileShader("PhongVertex");
-  shader->compileShader("PhongFragment");
-  // add them to the program
-  shader->attachShaderToProgram("Phong","PhongVertex");
-  shader->attachShaderToProgram("Phong","PhongFragment");
-  // now bind the shader attributes for most NGL primitives we use the following
-  // layout attribute 0 is the vertex data (x,y,z)
-  shader->bindAttribute("Phong",0,"inVert");
-  // attribute 1 is the UV data u,v (if present)
-  shader->bindAttribute("Phong",1,"inUV");
-  // attribute 2 are the normals x,y,z
-  shader->bindAttribute("Phong",2,"inNormal");
 
-  // now we have associated that data we can link the shader
-  shader->linkProgramObject("Phong");
-  // and make it active ready to load values
-  (*shader)["Phong"]->use();
+  // we are creating a shader called Phong
+
+  createShaderProgram("diffuse", "diffuseVertex", "diffuseFragment");
+
   // the shader will use the currently active material and light0 so set them
   ngl::Material m(ngl::STDMAT::GOLD);
   // load our material values to the shader into the structure material (see Vertex shader)
@@ -103,7 +81,7 @@ void NGLScene::initializeGL()
   // set the shape using FOV 45 Aspect Ratio based on Width and Height
   // The final two are near and far clipping planes of 0.5 and 10
   m_cam.setShape(45.0f,(float)720.0/576.0f,0.05f,350.0f);
-  shader->setUniform("viewerPos",m_cam.getEye().toVec3());
+  //shader->setUniform("viewerPos",m_cam.getEye().toVec3());
   // now create our light that is done after the camera so we can pass the
   // transpose of the projection matrix to the light to do correct eye space
   // transformations
@@ -117,11 +95,28 @@ void NGLScene::initializeGL()
   // set the viewport for openGL we need to take into account retina display
 }
 
+void NGLScene::createShaderProgram(const std::string _name, const std::string _vert, const std::string _frag)
+{
+    ngl::ShaderLib * shader = ngl::ShaderLib::instance();
+    shader->createShaderProgram(_name);
+    shader->attachShader(_vert, ngl::ShaderType::VERTEX);
+    shader->attachShader(_frag, ngl::ShaderType::FRAGMENT);
+
+    shader->loadShaderSource(_vert, "shaders/" + _vert + ".glsl");
+    shader->loadShaderSource(_frag, "shaders/" + _frag + ".glsl");
+
+    shader->compileShader(_vert);
+    shader->compileShader(_frag);
+
+    shader->attachShaderToProgram(_name, _vert);
+    shader->attachShaderToProgram(_name, _frag);
+
+    shader->linkProgramObject(_name);
+}
 
 void NGLScene::loadMatricesToShader()
 {
-  ngl::ShaderLib *shader=ngl::ShaderLib::instance();
-
+  ngl::ShaderLib * shader = ngl::ShaderLib::instance();
   ngl::Mat4 MV;
   ngl::Mat4 MVP;
   ngl::Mat3 normalMatrix;
@@ -143,9 +138,8 @@ void NGLScene::paintGL()
   // clear the screen and depth buffer
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  // grab an instance of the shader manager
-  ngl::ShaderLib *shader=ngl::ShaderLib::instance();
-  (*shader)["Phong"]->use();
+  ngl::ShaderLib * shader = ngl::ShaderLib::instance();
+  shader->use("diffuse");
 
   // Rotation based on the mouse position for our global transform
   ngl::Mat4 rotX;
@@ -161,12 +155,11 @@ void NGLScene::paintGL()
   m_mouseGlobalTX.m_m[3][2] = m_modelPos.m_z;
 
    // get the VBO instance and draw the built in teapot
-  ngl::VAOPrimitives *prim=ngl::VAOPrimitives::instance();
+  ngl::VAOPrimitives * prim=ngl::VAOPrimitives::instance();
+  prim->createCapsule("capsule", 1.0f, 2.0f, 20);
   // draw
   loadMatricesToShader();
-  prim->draw("teapot");
-
-
+  prim->draw("capsule");
 }
 
 //----------------------------------------------------------------------------------------------------------------------
