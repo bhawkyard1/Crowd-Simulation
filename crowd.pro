@@ -10,7 +10,7 @@ isEqual(QT_MAJOR_VERSION, 5) {
         DEFINES +=QT5BUILD
 }
 # where to put moc auto generated files
-MOC_DIR=moc
+MOC_DIR = moc
 # on a mac we don't create a .app bundle file ( for ease of multiplatform use)
 
 SOURCES += $$PWD/main.cpp \
@@ -19,20 +19,12 @@ SOURCES += $$PWD/main.cpp \
 HEADERS += $$PWD/include/base.hpp \
            $$PWD/include/*.hpp
 
+QMAKE_CXXFLAGS += $$system(sdl2-config --cflags)
 QMAKE_CXXFLAGS += -std=c++11
 
-win32 {
-    INCLUDEPATH += C:\SDL2\i686-w64-mingw32\include\SDL2
-    INCLUDEPATH += C:\SDL2\i686-w64-mingw32\include
-    LIBS += -L"C:/SDL2/lib/x64/" -lSDL2 -lSDL2main -lSDL2_image -lSDL2_ttf -lSDL2_mixer
-    #LIBS += -L"C:\SDL2\i686-w64-mingw32\lib" -mwindows -lmingw32 -lSDL2_image -lSDL2_ttf -lSDL2_mixer -lSDL2main -lSDL2
-    LIBS += -L"C:/NGL/lib/NGL.lib" -lNGL
-}
-unix {
-    QMAKE_CXXFLAGS += $$system(sdl2-config --cflags)
-    LIBS += $$system(sdl2-config --libs)
-    LIBS += -lSDL2_image -lSDL2_mixer -lSDL2_ttf
-}
+LIBS += $$system(sdl2-config --libs)
+LIBS += -lSDL2_image -lSDL2_mixer -lSDL2_ttf
+
 include($(HOME)/NGL/UseNGL.pri)
 
 OTHER_FILES += readme.md \

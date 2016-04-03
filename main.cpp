@@ -1,14 +1,8 @@
 #include <iostream>
-#include <ciso646>
-
 #include <QtGui/QGuiApplication>
 #include "NGLScene.hpp"
-#include <ngl/NGLInit.h>
-#include <ngl/VAOPrimitives.h> //library with shapes i
 
-#include "scene.hpp"
-#include "shader.hpp"
-#include "sim_time.hpp"
+//#include "shader.hpp"
 
 void initializeGL();
 void renderGL();
