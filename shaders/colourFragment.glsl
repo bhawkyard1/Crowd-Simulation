@@ -4,7 +4,9 @@ in vec4 fragCoord;
 
 out vec4 fragColour;
 
+uniform vec4 inColour;
+
 void main()
 {
-    fragColour = vec4(1.0, 1.0, 1.0, 1.0);
+    fragColour = inColour;
 }

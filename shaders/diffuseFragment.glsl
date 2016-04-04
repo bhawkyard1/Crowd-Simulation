@@ -6,7 +6,7 @@ in vec3 normal;
 layout(location = 0) out vec4 fragColour;
 
 uniform vec4 inColour;
-uniform vec3 ambientLightPos;
+//uniform vec3 ambientLightPos;
 
 void main()
 {

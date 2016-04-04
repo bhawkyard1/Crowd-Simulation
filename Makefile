@@ -579,6 +579,7 @@ moc/moc_NGLScene.cpp: /home/i7620560/NGL/include/ngl/Camera.h \
 		/home/i7620560/NGL/include/ngl/Image.h \
 		/home/i7620560/NGL/include/ngl/AbstractMesh.h \
 		/home/i7620560/NGL/include/ngl/NGLassert.h \
+		/home/i7620560/NGL/include/ngl/Transformation.h \
 		/opt/qt/5.5/gcc_64/include/QtGui/QOpenGLWindow \
 		/opt/qt/5.5/gcc_64/include/QtGui/qopenglwindow.h \
 		/opt/qt/5.5/gcc_64/include/QtGui/QPaintDeviceWindow \
@@ -598,8 +599,9 @@ moc/moc_NGLScene.cpp: /home/i7620560/NGL/include/ngl/Camera.h \
 		/opt/qt/5.5/gcc_64/include/QtGui/qopenglversionfunctions.h \
 		/opt/qt/5.5/gcc_64/include/QtGui/QImage \
 		include/scene.hpp \
-		include/actor.hpp \
+		include/navPoint.hpp \
 		include/vectors.hpp \
+		include/actor.hpp \
 		include/base.hpp \
 		include/AABB.hpp \
 		include/NGLScene.hpp
@@ -762,6 +764,7 @@ obj/main.o: main.cpp /opt/qt/5.5/gcc_64/include/QtGui/QGuiApplication \
 		/home/i7620560/NGL/include/ngl/Image.h \
 		/home/i7620560/NGL/include/ngl/AbstractMesh.h \
 		/home/i7620560/NGL/include/ngl/NGLassert.h \
+		/home/i7620560/NGL/include/ngl/Transformation.h \
 		/opt/qt/5.5/gcc_64/include/QtGui/QOpenGLWindow \
 		/opt/qt/5.5/gcc_64/include/QtGui/qopenglwindow.h \
 		/opt/qt/5.5/gcc_64/include/QtGui/QPaintDeviceWindow \
@@ -781,8 +784,9 @@ obj/main.o: main.cpp /opt/qt/5.5/gcc_64/include/QtGui/QGuiApplication \
 		/opt/qt/5.5/gcc_64/include/QtGui/qopenglversionfunctions.h \
 		/opt/qt/5.5/gcc_64/include/QtGui/QImage \
 		include/scene.hpp \
-		include/actor.hpp \
+		include/navPoint.hpp \
 		include/vectors.hpp \
+		include/actor.hpp \
 		include/base.hpp \
 		include/AABB.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/main.o main.cpp
@@ -947,6 +951,7 @@ obj/NGLScene.o: src/NGLScene.cpp /opt/qt/5.5/gcc_64/include/QtGui/QMouseEvent \
 		/home/i7620560/NGL/include/ngl/Image.h \
 		/home/i7620560/NGL/include/ngl/AbstractMesh.h \
 		/home/i7620560/NGL/include/ngl/NGLassert.h \
+		/home/i7620560/NGL/include/ngl/Transformation.h \
 		/opt/qt/5.5/gcc_64/include/QtGui/QOpenGLWindow \
 		/opt/qt/5.5/gcc_64/include/QtGui/qopenglwindow.h \
 		/opt/qt/5.5/gcc_64/include/QtGui/QPaintDeviceWindow \
@@ -966,8 +971,9 @@ obj/NGLScene.o: src/NGLScene.cpp /opt/qt/5.5/gcc_64/include/QtGui/QMouseEvent \
 		/opt/qt/5.5/gcc_64/include/QtGui/qopenglversionfunctions.h \
 		/opt/qt/5.5/gcc_64/include/QtGui/QImage \
 		include/scene.hpp \
-		include/actor.hpp \
+		include/navPoint.hpp \
 		include/vectors.hpp \
+		include/actor.hpp \
 		include/base.hpp \
 		include/AABB.hpp \
 		/home/i7620560/NGL/include/ngl/Material.h \
@@ -985,10 +991,12 @@ obj/object.o: src/object.cpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/object.o src/object.cpp
 
 obj/scene.o: src/scene.cpp include/scene.hpp \
-		include/actor.hpp \
+		include/navPoint.hpp \
 		include/vectors.hpp \
+		include/actor.hpp \
 		include/base.hpp \
-		include/AABB.hpp
+		include/AABB.hpp \
+		include/util.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/scene.o src/scene.cpp
 
 obj/shader.o: src/shader.cpp include/shader.hpp \
@@ -1114,11 +1122,14 @@ obj/shader.o: src/shader.cpp include/shader.hpp \
 obj/sim_time.o: src/sim_time.cpp include/sim_time.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/sim_time.o src/sim_time.cpp
 
-obj/util.o: src/util.cpp include/util.hpp
+obj/util.o: src/util.cpp include/util.hpp \
+		include/AABB.hpp \
+		include/vectors.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/util.o src/util.cpp
 
 obj/vectors.o: src/vectors.cpp include/vectors.hpp \
-		include/util.hpp
+		include/util.hpp \
+		include/AABB.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/vectors.o src/vectors.cpp
 
 obj/moc_NGLScene.o: moc/moc_NGLScene.cpp 
