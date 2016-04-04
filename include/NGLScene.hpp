@@ -6,10 +6,11 @@
 #include <ngl/Colour.h>
 #include <ngl/Light.h>
 #include <ngl/Text.h>
+#include <ngl/Obj.h>
 
 #include <QOpenGLWindow>
 
-//#include "scene.hpp"
+#include "scene.hpp"
 
 //----------------------------------------------------------------------------------------------------------------------
 /// @file NGLScene.h
@@ -144,6 +145,9 @@ private:
     void createShaderProgram(const std::string _name, const std::string _vert, const std::string _frag);
 
     //scene m_sim;
+    ngl::Obj * m_terrain;
+
+    void constructNavCloud();
 };
 
 
