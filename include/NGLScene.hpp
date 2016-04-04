@@ -141,14 +141,9 @@ private:
     //----------------------------------------------------------------------------------------------------------------------
     void wheelEvent( QWheelEvent *_event);
 
-<<<<<<< HEAD
-
     void createShaderProgram(const std::string _name, const std::string _vert, const std::string _frag);
 
     //scene m_sim;
-=======
-    void createShaderProgram(const std::string _name, const std::string _vert, const std::string _frag);
->>>>>>> 410fbe781a9665957377379831261e0feba8a3d0
 };
 
 

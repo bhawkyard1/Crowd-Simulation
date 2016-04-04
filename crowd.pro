@@ -25,6 +25,14 @@ QMAKE_CXXFLAGS += -std=c++11
 LIBS += $$system(sdl2-config --libs)
 LIBS += -lSDL2_image -lSDL2_mixer -lSDL2_ttf
 
+win32 {
+    INCLUDEPATH += C:\SDL2\i686-w64-mingw32\include\SDL2
+    INCLUDEPATH += C:\SDL2\i686-w64-mingw32\include
+    LIBS += -L"C:/SDL2/lib/x64/" -lSDL2 -lSDL2main -lSDL2_image -lSDL2_ttf
+    #LIBS += -L"C:\SDL2\i686-w64-mingw32\lib" -mwindows -lmingw32 -lSDL2_image -lSDL2_ttf -lSDL2_mixer -lSDL2main -lSDL2
+    LIBS += -L"C:/NGL/lib/NGL.lib" -lNGL
+}
+
 include($(HOME)/NGL/UseNGL.pri)
 
 OTHER_FILES += readme.md \

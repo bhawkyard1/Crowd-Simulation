@@ -271,7 +271,3 @@ void NGLScene::keyPressEvent(QKeyEvent *_event)
     update();
 }
 
-void NGLScene::createShaderProgram(const std::string _name, const std::string _vert, const std::string _frag)
-{
-
-}
