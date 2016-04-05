@@ -79,10 +79,12 @@ void scene::generateNavConnections(const float _threshold)
   for(size_t i = 0; i < initEnts.size() / 2; ++i) left.push_back(initEnts[i]);
   for(size_t i = initEnts.size() / 2 + 1; i < initEnts.size(); ++i) right.push_back(initEnts[i]);
 
+  std::cout << "pre" << std::endl;
   std::unique_ptr<kdtree> in (&tree);
+  std::cout << "pre2" << std::endl;
   tree.m_children.first = genKDT(std::move(in), left, 1);
   tree.m_children.second = genKDT(std::move(in), right, 1);
-
+  std::cout << "post" << std::endl;
 
   //Partition navPoints
   /*partitionNavs(&buckets, ents, box, 0, 32, 8);
@@ -158,10 +160,11 @@ void scene::partitionNavs(std::vector< std::vector<navPoint *> > * _partitions, 
 
 std::unique_ptr<kdtree> scene::genKDT(std::unique_ptr<kdtree> _cur, std::vector<navPoint *> _ents, int _axis)
 {
+  std::cout << "p1" << std::endl;
   if(_axis == 0) std::sort(_ents.begin(), _ents.end(), lessX);
   else if(_axis == 1) std::sort(_ents.begin(), _ents.end(), lessY);
   else if(_axis == 2) std::sort(_ents.begin(), _ents.end(), lessZ);
-
+  std::cout << "p2" << std::endl;
   size_t index = _ents.size() / 2;
 
   std::vector<navPoint *> left;
@@ -169,23 +172,27 @@ std::unique_ptr<kdtree> scene::genKDT(std::unique_ptr<kdtree> _cur, std::vector<
 
   for(size_t i = 0; i < index; ++i) left.push_back(_ents[i]);
   for(size_t i = index + 1; i < _ents.size(); ++i) right.push_back(_ents[i]);
-
+  std::cout << "p3" << std::endl;
   _axis += 1;
   if(_axis > 3) _axis = 0;
-
-  std::unique_ptr<kdtree> pcur;
-  pcur->m_node = _ents[index];
-
+  std::cout << "p3.5" << std::endl;
+  std::unique_ptr<kdtree> pcur (new kdtree);
+  std::cout << "p3.6 " << _ents.size() << ", " << index << std::endl;
+  //pcur->m_node = _ents[index];
+  //std::cout << "p4" << std::endl;
   if(_ents.size() <= 1)
   {
+    pcur->m_node = nullptr;
     pcur->m_children.first = nullptr;
     pcur->m_children.second = nullptr;
   }
   else
   {
+    pcur->m_node = _ents[index];
     pcur->m_children.first = genKDT(std::move(pcur), left, _axis);
     pcur->m_children.second = genKDT(std::move(pcur), right, _axis);
   }
+  std::cout << "recursion end" << std::endl;
   return pcur;
 }
 
