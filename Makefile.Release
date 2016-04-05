@@ -47,6 +47,7 @@ SOURCES       = main.cpp \
 		src\AABB.cpp \
 		src\actor.cpp \
 		src\base.cpp \
+		src\navPoint.cpp \
 		src\NGLScene.cpp \
 		src\object.cpp \
 		src\scene.cpp \
@@ -58,6 +59,7 @@ OBJECTS       = obj\main.obj \
 		obj\AABB.obj \
 		obj\actor.obj \
 		obj\base.obj \
+		obj\navPoint.obj \
 		obj\NGLScene.obj \
 		obj\object.obj \
 		obj\scene.obj \
@@ -71,6 +73,7 @@ DIST          =  include\base.hpp \
 		include\AABB.hpp \
 		include\actor.hpp \
 		include\base.hpp \
+		include\navPoint.hpp \
 		include\NGLScene.hpp \
 		include\object.hpp \
 		include\scene.hpp \
@@ -81,6 +84,7 @@ DIST          =  include\base.hpp \
 		src\AABB.cpp \
 		src\actor.cpp \
 		src\base.cpp \
+		src\navPoint.cpp \
 		src\NGLScene.cpp \
 		src\object.cpp \
 		src\scene.cpp \
@@ -176,7 +180,7 @@ dist:
 	$(ZIP) CSIM.zip $(SOURCES) $(DIST) crowd.pro D:\Qt\5.6\msvc2013_64\mkspecs\features\spec_pre.prf D:\Qt\5.6\msvc2013_64\mkspecs\common\angle.conf D:\Qt\5.6\msvc2013_64\mkspecs\common\msvc-base.conf D:\Qt\5.6\msvc2013_64\mkspecs\common\msvc-desktop.conf D:\Qt\5.6\msvc2013_64\mkspecs\qconfig.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_3dcore.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_3dcore_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_3dinput.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_3dinput_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_3dlogic.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_3dlogic_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_3dquick.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_3dquick_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_3dquickinput.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_3dquickinput_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_3dquickrender.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_3dquickrender_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_3drender.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_3drender_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_axbase.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_axbase_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_axcontainer.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_axcontainer_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_axserver.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_axserver_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_bluetooth.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_bluetooth_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_bootstrap_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_clucene_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_concurrent.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_concurrent_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_core.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_core_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_dbus.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_dbus_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_designer.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_designer_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_designercomponents_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_gui.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_gui_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_help.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_help_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_labscontrols_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_labstemplates_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_location.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_location_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_multimedia.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_multimedia_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_multimediawidgets.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_multimediawidgets_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_network.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_network_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_nfc.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_nfc_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_opengl.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_opengl_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_openglextensions.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_openglextensions_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_platformsupport_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_positioning.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_positioning_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_printsupport.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_printsupport_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_qml.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_qml_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_qmldevtools_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_qmltest.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_qmltest_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_qtmultimediaquicktools_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_quick.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_quick_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_quickparticles_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_quickwidgets.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_quickwidgets_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_script.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_script_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_scripttools.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_scripttools_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_sensors.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_sensors_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_serialbus.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_serialbus_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_serialport.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_serialport_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_sql.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_sql_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_svg.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_svg_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_testlib.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_testlib_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_uiplugin.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_uitools.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_uitools_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_webchannel.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_webchannel_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_webengine.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_webengine_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_webenginecore.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_webenginecore_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_webenginecoreheaders_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_webenginewidgets.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_webenginewidgets_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_websockets.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_websockets_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_webview.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_webview_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_widgets.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_widgets_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_winextras.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_winextras_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_xml.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_xml_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_xmlpatterns.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_xmlpatterns_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\modules\qt_lib_zlib_private.pri D:\Qt\5.6\msvc2013_64\mkspecs\features\qt_functions.prf D:\Qt\5.6\msvc2013_64\mkspecs\features\qt_config.prf D:\Qt\5.6\msvc2013_64\mkspecs\features\win32\qt_config.prf D:\Qt\5.6\msvc2013_64\mkspecs\win32-msvc2013\qmake.conf D:\Qt\5.6\msvc2013_64\mkspecs\features\spec_post.prf .qmake.cache D:\Qt\5.6\msvc2013_64\mkspecs\features\exclusive_builds.prf D:\Qt\5.6\msvc2013_64\mkspecs\features\default_pre.prf D:\Qt\5.6\msvc2013_64\mkspecs\features\win32\default_pre.prf \NGL\UseNGL.pri D:\Qt\5.6\msvc2013_64\mkspecs\features\resolve_config.prf D:\Qt\5.6\msvc2013_64\mkspecs\features\exclusive_builds_post.prf D:\Qt\5.6\msvc2013_64\mkspecs\features\default_post.prf D:\Qt\5.6\msvc2013_64\mkspecs\features\build_pass.prf D:\Qt\5.6\msvc2013_64\mkspecs\features\win32\console.prf D:\Qt\5.6\msvc2013_64\mkspecs\features\qml_debug.prf D:\Qt\5.6\msvc2013_64\mkspecs\features\win32\rtti.prf D:\Qt\5.6\msvc2013_64\mkspecs\features\precompile_header.prf D:\Qt\5.6\msvc2013_64\mkspecs\features\warn_on.prf D:\Qt\5.6\msvc2013_64\mkspecs\features\qt.prf D:\Qt\5.6\msvc2013_64\mkspecs\features\resources.prf D:\Qt\5.6\msvc2013_64\mkspecs\features\moc.prf D:\Qt\5.6\msvc2013_64\mkspecs\features\win32\opengl.prf D:\Qt\5.6\msvc2013_64\mkspecs\features\uic.prf D:\Qt\5.6\msvc2013_64\mkspecs\features\testcase_targets.prf D:\Qt\5.6\msvc2013_64\mkspecs\features\exceptions.prf D:\Qt\5.6\msvc2013_64\mkspecs\features\yacc.prf D:\Qt\5.6\msvc2013_64\mkspecs\features\lex.prf crowd.pro D:\Qt\5.6\msvc2013_64\lib\Qt5OpenGL.prl D:\Qt\5.6\msvc2013_64\lib\Qt5Widgets.prl D:\Qt\5.6\msvc2013_64\lib\Qt5Gui.prl D:\Qt\5.6\msvc2013_64\lib\Qt5Core.prl  NO_PCH_SOURCES RESOURCES HEADERS SOURCES OBJECTIVE_SOURCES FORMS YACCSOURCES YACCSOURCES LEXSOURCES 
 
 clean: compiler_clean 
-	-$(DEL_FILE) obj\main.obj obj\AABB.obj obj\actor.obj obj\base.obj obj\NGLScene.obj obj\object.obj obj\scene.obj obj\shader.obj obj\sim_time.obj obj\util.obj obj\vectors.obj obj\moc_NGLScene.obj
+	-$(DEL_FILE) obj\main.obj obj\AABB.obj obj\actor.obj obj\base.obj obj\navPoint.obj obj\NGLScene.obj obj\object.obj obj\scene.obj obj\shader.obj obj\sim_time.obj obj\util.obj obj\vectors.obj obj\moc_NGLScene.obj
 	-$(DEL_FILE) CSIM.exp
 
 distclean: clean 
@@ -1529,6 +1533,12 @@ moc\moc_NGLScene.cpp: \NGL\include\ngl\Camera.h \
 		\NGL\include\ngl\Text.h \
 		D:\Qt\5.6\msvc2013_64\include\QtCore\QHash \
 		D:\Qt\5.6\msvc2013_64\include\QtGui\QFont \
+		\NGL\include\ngl\Obj.h \
+		\NGL\include\ngl\Texture.h \
+		\NGL\include\ngl\Image.h \
+		\NGL\include\ngl\AbstractMesh.h \
+		\NGL\include\ngl\NGLassert.h \
+		\NGL\include\ngl\Transformation.h \
 		D:\Qt\5.6\msvc2013_64\include\QtGui\QOpenGLWindow \
 		D:\Qt\5.6\msvc2013_64\include\QtGui\qopenglwindow.h \
 		D:\Qt\5.6\msvc2013_64\include\QtGui\QPaintDeviceWindow \
@@ -1547,6 +1557,12 @@ moc\moc_NGLScene.cpp: \NGL\include\ngl\Camera.h \
 		D:\Qt\5.6\msvc2013_64\include\QtCore\QScopedPointer \
 		D:\Qt\5.6\msvc2013_64\include\QtGui\qopenglversionfunctions.h \
 		D:\Qt\5.6\msvc2013_64\include\QtGui\QImage \
+		include\scene.hpp \
+		include\navPoint.hpp \
+		include\vectors.hpp \
+		include\actor.hpp \
+		include\base.hpp \
+		include\AABB.hpp \
 		include\NGLScene.hpp
 	D:\Qt\5.6\msvc2013_64\bin\moc.exe $(DEFINES) -D_MSC_VER=1800 -D_WIN32 -D_WIN64 -ID:/Qt/5.6/msvc2013_64/mkspecs/win32-msvc2013 -IC:/Users/Ben/Documents/Programming/projects/Specialist/Crowd-Simulation -IC:/SDL2/i686-w64-mingw32/include/SDL2 -IC:/SDL2/i686-w64-mingw32/include -I/NGL/include -IC:/Users/Ben/Documents/Programming/projects/Specialist/Crowd-Simulation/-I -Ic:/boost -IC:/Users/Ben/Documents/Programming/projects/Specialist/Crowd-Simulation/include -ID:/Qt/5.6/msvc2013_64/include -ID:/Qt/5.6/msvc2013_64/include/QtOpenGL -ID:/Qt/5.6/msvc2013_64/include/QtWidgets -ID:/Qt/5.6/msvc2013_64/include/QtGui -ID:/Qt/5.6/msvc2013_64/include/QtANGLE -ID:/Qt/5.6/msvc2013_64/include/QtCore include\NGLScene.hpp -o moc\moc_NGLScene.cpp
 
@@ -2904,6 +2920,12 @@ obj\main.obj: main.cpp D:\Qt\5.6\msvc2013_64\include\QtGui\QGuiApplication \
 		\NGL\include\ngl\Text.h \
 		D:\Qt\5.6\msvc2013_64\include\QtCore\QHash \
 		D:\Qt\5.6\msvc2013_64\include\QtGui\QFont \
+		\NGL\include\ngl\Obj.h \
+		\NGL\include\ngl\Texture.h \
+		\NGL\include\ngl\Image.h \
+		\NGL\include\ngl\AbstractMesh.h \
+		\NGL\include\ngl\NGLassert.h \
+		\NGL\include\ngl\Transformation.h \
 		D:\Qt\5.6\msvc2013_64\include\QtGui\QOpenGLWindow \
 		D:\Qt\5.6\msvc2013_64\include\QtGui\qopenglwindow.h \
 		D:\Qt\5.6\msvc2013_64\include\QtGui\QPaintDeviceWindow \
@@ -2921,7 +2943,13 @@ obj\main.obj: main.cpp D:\Qt\5.6\msvc2013_64\include\QtGui\QGuiApplication \
 		D:\Qt\5.6\msvc2013_64\include\QtGui\qopenglcontext.h \
 		D:\Qt\5.6\msvc2013_64\include\QtCore\QScopedPointer \
 		D:\Qt\5.6\msvc2013_64\include\QtGui\qopenglversionfunctions.h \
-		D:\Qt\5.6\msvc2013_64\include\QtGui\QImage
+		D:\Qt\5.6\msvc2013_64\include\QtGui\QImage \
+		include/scene.hpp \
+		include/navPoint.hpp \
+		include/vectors.hpp \
+		include/actor.hpp \
+		include/base.hpp \
+		include/AABB.hpp
 
 obj\AABB.obj: src\AABB.cpp include/AABB.hpp \
 		include/vectors.hpp \
@@ -2932,6 +2960,9 @@ obj\actor.obj: src\actor.cpp include/actor.hpp \
 		include/base.hpp
 
 obj\base.obj: src\base.cpp 
+
+obj\navPoint.obj: src\navPoint.cpp include/navPoint.hpp \
+		include/vectors.hpp
 
 obj\NGLScene.obj: src\NGLScene.cpp D:\Qt\5.6\msvc2013_64\include\QtGui\QMouseEvent \
 		D:\Qt\5.6\msvc2013_64\include\QtGui\qevent.h \
@@ -4272,6 +4303,12 @@ obj\NGLScene.obj: src\NGLScene.cpp D:\Qt\5.6\msvc2013_64\include\QtGui\QMouseEve
 		\NGL\include\ngl\Text.h \
 		D:\Qt\5.6\msvc2013_64\include\QtCore\QHash \
 		D:\Qt\5.6\msvc2013_64\include\QtGui\QFont \
+		\NGL\include\ngl\Obj.h \
+		\NGL\include\ngl\Texture.h \
+		\NGL\include\ngl\Image.h \
+		\NGL\include\ngl\AbstractMesh.h \
+		\NGL\include\ngl\NGLassert.h \
+		\NGL\include\ngl\Transformation.h \
 		D:\Qt\5.6\msvc2013_64\include\QtGui\QOpenGLWindow \
 		D:\Qt\5.6\msvc2013_64\include\QtGui\qopenglwindow.h \
 		D:\Qt\5.6\msvc2013_64\include\QtGui\QPaintDeviceWindow \
@@ -4290,6 +4327,12 @@ obj\NGLScene.obj: src\NGLScene.cpp D:\Qt\5.6\msvc2013_64\include\QtGui\QMouseEve
 		D:\Qt\5.6\msvc2013_64\include\QtCore\QScopedPointer \
 		D:\Qt\5.6\msvc2013_64\include\QtGui\qopenglversionfunctions.h \
 		D:\Qt\5.6\msvc2013_64\include\QtGui\QImage \
+		include/scene.hpp \
+		include/navPoint.hpp \
+		include/vectors.hpp \
+		include/actor.hpp \
+		include/base.hpp \
+		include/AABB.hpp \
 		\NGL\include\ngl\Material.h \
 		\NGL\include\ngl\NGLInit.h \
 		\NGL\include\ngl\Singleton.h \
@@ -4304,10 +4347,12 @@ obj\NGLScene.obj: src\NGLScene.cpp D:\Qt\5.6\msvc2013_64\include\QtGui\QMouseEve
 obj\object.obj: src\object.cpp 
 
 obj\scene.obj: src\scene.cpp include/scene.hpp \
-		include/actor.hpp \
+		include/navPoint.hpp \
 		include/vectors.hpp \
+		include/actor.hpp \
 		include/base.hpp \
-		include/AABB.hpp
+		include/AABB.hpp \
+		include/util.hpp
 
 obj\shader.obj: src\shader.cpp include/shader.hpp \
 		\NGL\include\ngl\Types.h \
@@ -5630,10 +5675,13 @@ obj\shader.obj: src\shader.cpp include/shader.hpp \
 
 obj\sim_time.obj: src\sim_time.cpp include/sim_time.hpp
 
-obj\util.obj: src\util.cpp include/util.hpp
+obj\util.obj: src\util.cpp include/util.hpp \
+		include/AABB.hpp \
+		include/vectors.hpp
 
 obj\vectors.obj: src\vectors.cpp include/vectors.hpp \
-		include/util.hpp
+		include/util.hpp \
+		include/AABB.hpp
 
 obj\moc_NGLScene.obj: moc\moc_NGLScene.cpp 
 
