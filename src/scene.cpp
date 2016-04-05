@@ -72,8 +72,17 @@ void scene::generateNavConnections(const float _threshold)
   for(auto &i : m_navCloud) initEnts.push_back(&i);
   std::sort(initEnts.begin(), initEnts.end(), lessX);
   tree.m_node = initEnts[initEnts.size() / 2];
-  genKDT(&tree, left, 1);
-  genKDT(&tree, left, 1);
+
+  std::vector<navPoint *> left;
+  std::vector<navPoint *> right;
+
+  for(size_t i = 0; i < initEnts.size() / 2; ++i) left.push_back(initEnts[i]);
+  for(size_t i = initEnts.size() / 2 + 1; i < initEnts.size(); ++i) right.push_back(initEnts[i]);
+
+  std::unique_ptr<kdtree> in (&tree);
+  tree.m_children.first = genKDT(std::move(in), left, 1);
+  tree.m_children.second = genKDT(std::move(in), right, 1);
+
 
   //Partition navPoints
   /*partitionNavs(&buckets, ents, box, 0, 32, 8);
@@ -147,7 +156,7 @@ void scene::partitionNavs(std::vector< std::vector<navPoint *> > * _partitions, 
   }
 }
 
-void scene::genKDT(kdtree * _cur, std::vector<navPoint *> _ents, int _axis)
+std::unique_ptr<kdtree> scene::genKDT(std::unique_ptr<kdtree> _cur, std::vector<navPoint *> _ents, int _axis)
 {
   if(_axis == 0) std::sort(_ents.begin(), _ents.end(), lessX);
   else if(_axis == 1) std::sort(_ents.begin(), _ents.end(), lessY);
@@ -159,24 +168,25 @@ void scene::genKDT(kdtree * _cur, std::vector<navPoint *> _ents, int _axis)
   std::vector<navPoint *> right;
 
   for(size_t i = 0; i < index; ++i) left.push_back(_ents[i]);
-  for(size_t i = index + i; i < _ents.size(); ++i) right.push_back(_ents[i]);
+  for(size_t i = index + 1; i < _ents.size(); ++i) right.push_back(_ents[i]);
 
   _axis += 1;
   if(_axis > 3) _axis = 0;
 
-  kdtree pcur;
-  pcur.m_node = _ents[index];
+  std::unique_ptr<kdtree> pcur;
+  pcur->m_node = _ents[index];
 
   if(_ents.size() <= 1)
   {
-    _cur->m_children.first = nullptr;
-    _cur->m_children.second = nullptr;
+    pcur->m_children.first = nullptr;
+    pcur->m_children.second = nullptr;
   }
   else
   {
-    genKDT(&pcur, left, _axis);
-    genKDT(&pcur, right, _axis);
+    pcur->m_children.first = genKDT(std::move(pcur), left, _axis);
+    pcur->m_children.second = genKDT(std::move(pcur), right, _axis);
   }
+  return pcur;
 }
 
 void scene::addActor(const vec3 _p)

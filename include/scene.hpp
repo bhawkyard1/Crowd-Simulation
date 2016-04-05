@@ -3,7 +3,7 @@
 
 #include <cstddef>
 #include <vector>
-
+#include<memory>
 #include "navPoint.hpp"
 #include "actor.hpp"
 #include "vectors.hpp"
@@ -18,7 +18,7 @@ struct partition
 struct kdtree
 {
   navPoint * m_node;
-  std::pair<kdtree*, kdtree*> m_children;
+  std::pair<std::unique_ptr<kdtree>, std::unique_ptr<kdtree>> m_children;
 };
 
 class scene
@@ -38,7 +38,7 @@ public:
   void generateNavConnections(const float _threshold);
   void partitionNavs(std::vector< std::vector<navPoint *> > * _partitions, std::vector<navPoint *> _ents, aabb _box, int lvl, int minCount, int maxLvl);
 
-  void genKDT(kdtree * _cur, std::vector<navPoint *> _ents, int _axis);
+  std::unique_ptr<kdtree> genKDT(std::unique_ptr<kdtree> _cur, std::vector<navPoint *> _ents, int _axis);
 
   std::vector<actor> * getActors() {return &m_actors;}
   std::vector<navPoint> * getNavPoints() {return &m_navCloud;}
