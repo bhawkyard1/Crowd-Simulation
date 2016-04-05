@@ -1,5 +1,6 @@
 #include <ciso646>
 #include <algorithm>
+#include <array>
 
 #include "scene.hpp"
 #include "util.hpp"
@@ -67,10 +68,15 @@ void scene::generateNavConnections(const float _threshold)
 
   aabb box = enclose(m_navCloud);
 
-  //Partition navPoints
-  partitionNavs(&buckets, ents, box, 0, 32, 8);
+  std::vector<navPoint *> initEnts;
+  for(auto &i : m_navCloud) initEnts.push_back(&i);
+  std::sort(initEnts.begin(), initEnts.end(), lessX);
+  tree.m_node = initEnts[initEnts.size() / 2];
+  genKDT(&tree, left, 1);
+  genKDT(&tree, left, 1);
 
-  int DELETE_count = 0;
+  //Partition navPoints
+  /*partitionNavs(&buckets, ents, box, 0, 32, 8);
 
   //Sort navPoints
   for(auto &bucket : buckets)
@@ -108,16 +114,13 @@ void scene::generateNavConnections(const float _threshold)
       }
       navA->m_neighbours = connections;
     }
-  }
+  }*/
 }
 
 void scene::partitionNavs(std::vector< std::vector<navPoint *> > * _partitions, std::vector<navPoint *> _ents, aabb _box, int lvl, int minCount, int maxLvl)
 {
-  std::cout << "CALL " << lvl << std::endl;
   int count = 0;
-  //std::cout << "  p0" << std::endl;
   std::vector<navPoint *> pass;
-  //std::cout << "  p1" << std::endl;
 
   for(auto &i : _ents)
   {
@@ -144,6 +147,38 @@ void scene::partitionNavs(std::vector< std::vector<navPoint *> > * _partitions, 
   }
 }
 
+void scene::genKDT(kdtree * _cur, std::vector<navPoint *> _ents, int _axis)
+{
+  if(_axis == 0) std::sort(_ents.begin(), _ents.end(), lessX);
+  else if(_axis == 1) std::sort(_ents.begin(), _ents.end(), lessY);
+  else if(_axis == 2) std::sort(_ents.begin(), _ents.end(), lessZ);
+
+  size_t index = _ents.size() / 2;
+
+  std::vector<navPoint *> left;
+  std::vector<navPoint *> right;
+
+  for(size_t i = 0; i < index; ++i) left.push_back(_ents[i]);
+  for(size_t i = index + i; i < _ents.size(); ++i) right.push_back(_ents[i]);
+
+  _axis += 1;
+  if(_axis > 3) _axis = 0;
+
+  kdtree pcur;
+  pcur.m_node = _ents[index];
+
+  if(_ents.size() <= 1)
+  {
+    _cur->m_children.first = nullptr;
+    _cur->m_children.second = nullptr;
+  }
+  else
+  {
+    genKDT(&pcur, left, _axis);
+    genKDT(&pcur, right, _axis);
+  }
+}
+
 void scene::addActor(const vec3 _p)
 {
   actor a (_p);
@@ -152,49 +187,80 @@ void scene::addActor(const vec3 _p)
   m_actors.push_back(a);
 }
 
-void scene::tracePath(actor * _a, navPoint * _start, navPoint * _end)
+void scene::calcPath(actor *_a, navPoint *_start, navPoint *_end)
 {
-  navPoint * cur = _start;
+  //Nodes to consider.
+  //Stored as follows:
+  //  {node, {cost, dist}},
+  //  parent
+  //ORDERED BY F COST
+  std::vector<
+      std::pair<
+      std::pair<navPoint*, std::array<float, 2>>,
+      navPoint*>
+      > openList;
 
-  //These are nodes that have been considered but not used. They will not be used in future calculations.
-  std::vector<navPoint *> open;
-  //These are nodes that the actor will use.
-  std::vector<navPoint *> use;
+  //Nodes to remember.
+  std::vector<navPoint *> closedList;
 
-  //Trace start to end.
-  while(cur != _end)
+  //Add the start node to the closed list.
+  closedList.push_back(_start);
+
+  while(openList.size() > 0 and std::find(closedList.begin(), closedList.end(), _end) == closedList.end())
   {
-    float bestHeuristic = F_INF;
-    navPoint * bestPoint;
-
-    //Find the best point.
-    for(auto &point : cur->m_neighbours)
+    //Loop through the neighbours of the node at the end of the open list (i.e. node with the lowest f cost.)
+    for(auto &i : closedList.back()->m_neighbours)
     {
-      //Check the considered point has not already been evaluated.
-      if(std::find(open.begin(), open.end(), point) != open.end())
+      //If the considered node is already on the closed list, skip it.
+      if(std::find(closedList.begin(), closedList.end(), i) != closedList.end()) continue;
+
+      bool alreadyOnOpenList = false;
+      auto entry = openList.begin();
+      for(auto j = openList.begin(); j != openList.end(); ++j)
       {
-        continue;
+        if(j->first.first == i)
+        {
+          entry = j;
+          alreadyOnOpenList = true;
+        }
       }
 
-      float cost = magns(point->getPos() - cur->getPos()) * point->m_weight;
-      float dist = magns(point->getPos() - _end->getPos());
-      float heuristic = cost + dist;
-      if(heuristic < bestHeuristic)
+      if(!alreadyOnOpenList)
       {
-        bestHeuristic = heuristic;
-        bestPoint = point;
+        //If the neigbour is NOT on the open list, insert in the correct place.
+        float cost = mag(i->getPos() - closedList.back()->getPos());
+        float dist = mag(i->getPos() - _end->getPos());
+
+        bool addAtEnd = true;
+        //For each node in the open list, if it beats the current f cost, insert current node just before, then break.
+        for(auto k = openList.begin(); k != openList.end(); ++k)
+        {
+          if(k->first.second[0] + k->first.second[1] < cost + dist)
+          {
+            //Insert at k a pair, containing:
+            //  Another pair, containing:
+            //    The current neighbour, and an array, containing:
+            //      The cost, and the dist.
+            //  And the parent.
+            openList.insert(k, {{i,{cost,dist}},closedList.back()});
+            addAtEnd = false;
+            break;
+          }
+        }
+        //If the f cost has NOT been beaten, just stick it on the end of the open list.
+        if(addAtEnd) openList.push_back({{i,{cost,dist}},closedList.back()});
+      }
+      else
+      {
+        //If the neighbour is on the open list, evaluate its dist vs the current square.
+        float dist = mag(closedList.back()->getPos() - _end->getPos());
+        if(dist > entry->first.second[1])
+        {
+          entry->second = closedList.back();
+        }
       }
     }
-
-    //Put the best point in the closed list, the rest in the open list.
-    for(auto &point : cur->m_neighbours)
-    {
-      if(point == bestPoint)
-      {
-        use.push_back(point);
-        cur = use.back();
-      }
-      else open.push_back(point);
-    }
+    closedList.push_back(openList.back().first.first);
+    openList.pop_back();
   }
 }

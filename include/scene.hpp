@@ -15,11 +15,18 @@ struct partition
   std::vector<navPoint *> m_navs;
 };
 
+struct kdtree
+{
+  navPoint * m_node;
+  std::pair<kdtree*, kdtree*> m_children;
+};
+
 class scene
 {
   std::vector<actor> m_actors;
   std::vector<navPoint> m_navCloud;
   std::vector<partition> m_partitions;
+  kdtree tree;
 public:
   scene();
   void update(float dt);
@@ -31,10 +38,14 @@ public:
   void generateNavConnections(const float _threshold);
   void partitionNavs(std::vector< std::vector<navPoint *> > * _partitions, std::vector<navPoint *> _ents, aabb _box, int lvl, int minCount, int maxLvl);
 
+  void genKDT(kdtree * _cur, std::vector<navPoint *> _ents, int _axis);
+
   std::vector<actor> * getActors() {return &m_actors;}
   std::vector<navPoint> * getNavPoints() {return &m_navCloud;}
+  navPoint getNavPoint(size_t i) {return m_navCloud[i];}
 
   void addActor(const vec3 _p);
+  void calcPath(actor * _a, navPoint *_start, navPoint *_end);
   void tracePath(actor * _a, navPoint *_start, navPoint *_end);
 };
 

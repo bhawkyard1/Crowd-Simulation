@@ -93,6 +93,10 @@ void NGLScene::initializeGL()
 
   constructNavCloud();
 
+  navPoint pt = m_sim.getNavPoint(rand() % m_sim.getNavPoints()->size());
+  vec3 spos = pt.m_pos;
+  m_sim.addActor(spos);
+
   glGenVertexArrays(1, &m_navConnectionsVAO);
   glBindVertexArray(m_navConnectionsVAO);
 
@@ -180,10 +184,16 @@ void NGLScene::paintGL()
 
   // get the VBO instance and draw the built in teapot
   ngl::VAOPrimitives * prim=ngl::VAOPrimitives::instance();
-  // draw
-  loadMatricesToShader();
-  //prim->draw("capsule");
 
+  for(auto &i : *m_sim.getActors())
+  {
+    m_transform.setPosition(i.getPos().m_x, i.getPos().m_y, i.getPos().m_z);
+    loadMatricesToShader();
+    prim->draw("capsule");
+    m_transform.reset();
+  }
+
+  loadMatricesToShader();
   shader->setRegisteredUniform("inColour", ngl::Vec4(0.3f, 0.3f, 0.3f, 1.0f));
   m_terrain->draw();
 
