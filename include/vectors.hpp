@@ -86,6 +86,7 @@ float dotProd2(const vec3 A, const vec3 B);
 
 //Given a point p1 and a gradients m1, and the general point p2, will find the point on p1 + t(m1) closest to p2.
 vec2 closest(const vec2 p1, const vec2 m1, const vec2 p2);
+vec3 closest(const vec3 p1, const vec3 n1, const vec3 p2);
 vec3 tovec3(const vec2 vec);
 vec2 tovec2(const vec3 vec);
 float angle(const vec2 vec);

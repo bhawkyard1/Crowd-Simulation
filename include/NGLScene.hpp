@@ -145,6 +145,8 @@ private:
 
     void createShaderProgram(const std::string _name, const std::string _vert, const std::string _frag);
 
+    void timerEvent(QTimerEvent * _event);
+
     scene m_sim;
     ngl::Obj * m_terrain;
 
@@ -154,6 +156,9 @@ private:
 
     GLuint m_navConnectionsVAO;
     size_t m_navConnectionsSize;
+
+    GLuint m_navPathVAO;
+    size_t m_navPathSize;
 };
 
 

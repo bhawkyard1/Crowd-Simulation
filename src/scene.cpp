@@ -10,9 +10,12 @@ scene::scene()
 
 }
 
-void scene::update(float dt)
+void scene::update(float _dt)
 {
-
+  for(auto &i : m_actors)
+  {
+    i.update(_dt);
+  }
 }
 
 void scene::draw(float dt)
@@ -65,7 +68,7 @@ void scene::generateNavConnections(const float _threshold)
 
   //aabb box = enclose(m_navCloud);
 
-  std::vector<navPoint *> initEnts;
+  /*std::vector<navPoint *> initEnts;
   for(auto &i : m_navCloud) initEnts.push_back(&i);
   std::sort(initEnts.begin(), initEnts.end(), lessX);
   m_tree.m_node = initEnts[initEnts.size() / 2];
@@ -84,14 +87,54 @@ void scene::generateNavConnections(const float _threshold)
   m_tree.m_children.second = genKDT(in, right, 0, &a);
 
   std::cout << "post " << a << std::endl;
+
   for(auto &i : m_navCloud)
   {
     navPoint * best = nullptr;
     std::vector<std::pair<kdtree*,bool>> path;
     kdtree * input = &m_tree;
-    getNearestNavPoint(i.m_pos, input, best, &path);
-  }
+    getNearestNavPoint(i.m_pos, input, &best, &path);
 
+    for(auto j = path.end() - 1; j != path.begin() - 1; --j)
+    {
+      if(magns(j->first->m_node->m_pos - i.m_pos) < magns(best->m_pos - i.m_pos))
+      {
+         best = j->first->m_node;
+      }
+    }
+    i.m_neighbours.push_back(best);
+  }*/
+
+  int count = 0;
+  for(auto &i : m_navCloud)
+  {
+    std::vector<navPoint *> temp;
+    std::cout << "Count " << count << std::endl;
+    for(auto &j : m_navCloud)
+    {
+      if(&j == &i) continue;
+      if(temp.size() < 4)
+      {
+        temp.push_back(&j);
+        continue;
+      }
+      else
+      {
+        temp.erase( temp.begin() + 4, temp.end() );
+        float dist = magns(j.m_pos - i.m_pos);
+        for(int k = 0; k < 4; ++k)
+        {
+          if(magns(temp[k]->m_pos - i.m_pos) > dist)
+          {
+            temp.insert(temp.begin() + k, &j);
+            break;
+          }
+        }
+      }
+    }
+    i.m_neighbours = temp;
+    count++;
+  }
 
   //Partition navPoints
   /*partitionNavs(&buckets, ents, box, 0, 32, 8);
@@ -169,46 +212,35 @@ kdtree * scene::genKDT(kdtree * _cur, std::vector<navPoint *> _ents, int _axis, 
 {
   std::cout << "a is " << *_a << std::endl;
   (*_a)++;
-  if(_cur == nullptr) return nullptr;
-  std::cout << "p1" << std::endl;
+
   if(_axis == 0) std::sort(_ents.begin(), _ents.end(), lessX);
   else if(_axis == 1) std::sort(_ents.begin(), _ents.end(), lessY);
   else if(_axis == 2) std::sort(_ents.begin(), _ents.end(), lessZ);
-  std::cout << "p2" << std::endl;
   size_t index = _ents.size() / 2;
+
+  //std::cout << "axis : " << _axis << std::endl;
+  //for(auto &i : _ents) std::cout << i->m_pos.m_x << ", " << i->m_pos.m_y << ", " << i->m_pos.m_z << std::endl;
 
   std::vector<navPoint *> left;
   std::vector<navPoint *> right;
 
   for(size_t i = 0; i < index; ++i) left.push_back(_ents[i]);
   for(size_t i = index + 1; i < _ents.size(); ++i) right.push_back(_ents[i]);
-  std::cout << "p3" << std::endl;
+
   _axis += 1;
   if(_axis > 3) _axis = 0;
-  std::cout << "p3.5" << std::endl;
+
   kdtree * newTree = new kdtree;
-  std::cout << "p3.6 " << _ents.size() << ", " << (newTree == nullptr) << std::endl;
-  //pcur->m_node = _ents[index];
-  //std::cout << "p4" << std::endl;
-  if(_ents.size() <= 1)
-  {
-    _cur->m_axis = -1;
-    std::cout << "nullpt it 1! " << std::endl;
-    _cur->m_node = nullptr;
-    std::cout << "nullpt it 2!" << std::endl;
-    _cur->m_children.first = nullptr;
-    std::cout << "nullpt it 3!" << std::endl;
-    _cur->m_children.second = nullptr;
-    std::cout << "nullpt end!" << std::endl;
-  }
-  else
-  {
-    _cur->m_axis = _axis;
-    std::cout << "recurse it!" << std::endl;
-    _cur->m_node = _ents[index];
-    if(left.size() > 0) _cur->m_children.first = genKDT(newTree, left, _axis, _a);
-    if(right.size() > 0) _cur->m_children.second = genKDT(newTree, right, _axis, _a);
-  }
+
+  _cur->m_node = _ents[index];
+  _cur->m_axis = -1;
+
+  if(left.size() == 0) _cur->m_children.first = nullptr;
+  else _cur->m_children.first = genKDT(newTree, left, _axis, _a);
+
+  if(right.size() == 0) _cur->m_children.second = nullptr;
+  else _cur->m_children.second = genKDT(newTree, right, _axis, _a);
+
   std::cout << "recursion end " << &_cur << std::endl;
   return _cur;
 }
@@ -253,15 +285,21 @@ std::unique_ptr<kdtree> scene::genKDT(std::unique_ptr<kdtree> _cur, std::vector<
     return pcur;
 }
 */
-void scene::addActor(const vec3 _p)
+std::vector<vec3> scene::addActor(navPoint * _p)
 {
-  actor a (_p);
+  std::cout << "yo! " << _p->m_pos.m_x << ", " << _p->m_pos.m_y << ", " << _p->m_pos.m_z << std::endl;
+  actor a (_p->m_pos);
+  std::cout << "yo! " << a.getPos().m_x << ", " << a.getPos().m_y << ", " << a.getPos().m_z << std::endl;
   navPoint * npt = &m_navCloud[rand() % m_navCloud.size()];
   a.setTPos(npt->getPos());
   m_actors.push_back(a);
+
+  std::vector<vec3> ret = calcPath(&m_actors.back(), _p, npt);
+  std::cout << "yo! " << m_actors.back().getPos().m_x << ", " << m_actors.back().getPos().m_y << ", " << m_actors.back().getPos().m_z << std::endl;
+  return ret;
 }
 
-void scene::calcPath(actor *_a, navPoint *_start, navPoint *_end)
+std::vector<vec3> scene::calcPath(actor *_a, navPoint *_start, navPoint *_end)
 {
   //Nodes to consider.
   //Stored as follows:
@@ -276,20 +314,24 @@ void scene::calcPath(actor *_a, navPoint *_start, navPoint *_end)
 
   //Nodes to remember.
   std::vector<navPoint *> closedList;
-
   //Add the start node to the closed list.
   closedList.push_back(_start);
 
-  while(openList.size() > 0 and std::find(closedList.begin(), closedList.end(), _end) == closedList.end())
+  std::cout << "p0" << std::endl;
+  bool once = true;
+  while((openList.size() > 0 or once) and std::find(closedList.begin(), closedList.end(), _end) == closedList.end())
   {
+    std::cout << "p1" << std::endl;
     //Loop through the neighbours of the node at the end of the open list (i.e. node with the lowest f cost.)
     for(auto &i : closedList.back()->m_neighbours)
     {
+      std::cout << "p1.1" << std::endl;
       //If the considered node is already on the closed list, skip it.
       if(std::find(closedList.begin(), closedList.end(), i) != closedList.end()) continue;
 
       bool alreadyOnOpenList = false;
       auto entry = openList.begin();
+      std::cout << "p1.2" << std::endl;
       for(auto j = openList.begin(); j != openList.end(); ++j)
       {
         if(j->first.first == i)
@@ -298,7 +340,7 @@ void scene::calcPath(actor *_a, navPoint *_start, navPoint *_end)
           alreadyOnOpenList = true;
         }
       }
-
+      std::cout << "p1.3" << std::endl;
       if(!alreadyOnOpenList)
       {
         //If the neigbour is NOT on the open list, insert in the correct place.
@@ -333,68 +375,80 @@ void scene::calcPath(actor *_a, navPoint *_start, navPoint *_end)
           entry->second = closedList.back();
         }
       }
+      once = false;
     }
+    std::cout << "p2" << std::endl;
     closedList.push_back(openList.back().first.first);
     openList.pop_back();
   }
+
+  for(auto &i : closedList)
+  {
+    _a->addWaypoint(i->m_pos);
+  }
+
+  return _a->getWaypoints();
 }
 
-void scene::getNearestNavPoint(vec3 _p, kdtree * _inputNode, navPoint * _best, std::vector<std::pair<kdtree*, bool>>* _path)
+void scene::getNearestNavPoint(vec3 _p, kdtree * _inputNode, navPoint ** _best, std::vector<std::pair<kdtree*, bool>>* _path)
 {
-  bool goLeft = true;
+  std::cout << "input has null nav? " << (_inputNode->m_node == nullptr) << std::endl;
+  //False = left, true = right
+  bool dir = false;
   if(_inputNode->m_axis == 0)
   {
     if(_p.m_x > _inputNode->m_node->m_pos.m_x)
     {
-      goLeft = false;
+      dir = true;
     }
   }
   else if(_inputNode->m_axis == 0)
   {
     if(_p.m_y > _inputNode->m_node->m_pos.m_y)
     {
-      goLeft = false;
+      dir = true;
     }
   }
   else if(_inputNode->m_axis == 0)
   {
     if(_p.m_z > _inputNode->m_node->m_pos.m_z)
     {
-      goLeft = false;
+      dir = true;
     }
   }
-  std::cout << "p1 " << (_inputNode == nullptr) << std::endl;
-  _path->push_back({_inputNode, goLeft});
-  std::cout << "p2 " << (_inputNode->m_children.first == nullptr) << ", " << (_inputNode->m_children.second == nullptr) << std::endl;
+  /*std::cout << "p1 " << (_inputNode == nullptr) << std::endl;
 
-  if(goLeft)
+  std::cout << "p2 " << (_inputNode->m_children.first == nullptr) << ", " << (_inputNode->m_children.second == nullptr) << std::endl;*/
+
+  if(!dir)
   {
-    std::cout << "go left" << std::endl;
+    /*std::cout << "go left" << std::endl;
     std::cout << "_p " << _p.m_x << ", " << _p.m_y << ", " << _p.m_z << std::endl;
     std::cout << "_in " << &_inputNode << ", " << (_inputNode == nullptr) << std::endl;
     std::cout << "_best " << _best << ", " << (_best == nullptr) << std::endl;
-    std::cout << "_path " << _path << std::endl;
+    std::cout << "_path " << _path << std::endl;*/
     if(_inputNode->m_children.first == nullptr)
     {
-      _best = _inputNode->m_node;
-      std::cout << "bail" << std::endl;
+      *_best = (_inputNode->m_node);
+      std::cout << "bail " << (*_best == nullptr) << ", " << (_inputNode->m_node == nullptr) << std::endl;
       return;
     }
     getNearestNavPoint(_p, _inputNode->m_children.first, _best, _path);
   }
   else
   {
-    std::cout << "go right" << std::endl;
+    /*std::cout << "go right" << std::endl;
     std::cout << "_p " << _p.m_x << ", " << _p.m_y << ", " << _p.m_z << std::endl;
     std::cout << "_in " << &_inputNode << ", " << (_inputNode == nullptr) << std::endl;
     std::cout << "_best " << _best << ", " << (_best == nullptr) << std::endl;
-    std::cout << "_path " << _path << std::endl;
+    std::cout << "_path " << _path << std::endl;*/
     if(_inputNode->m_children.second == nullptr)
     {
-      _best = _inputNode->m_node;
-      std::cout << "bail" << std::endl;
+      *_best = (_inputNode->m_node);
+      std::cout << "bail " << (*_best == nullptr) << ", " << (_inputNode->m_node == nullptr) << std::endl;
       return;
     }
     getNearestNavPoint(_p, _inputNode->m_children.second, _best, _path);
   }
+  _path->push_back({_inputNode, dir});
 }

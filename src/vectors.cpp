@@ -329,6 +329,14 @@ vec2 closest(vec2 p1, vec2 m1, vec2 p2)
     return p1 + m1 * dotProd1( p2 - p1, m1 );
 }
 
+//Finds the distance to the hyperplane (defined by point p1 and normal n1) from point p2.
+float distToPlane(vec3 p1, vec3 n1, vec3 p2)
+{
+  vec3 d1 = -(p1 - p2);
+  float dist = fabs(dotProd1(n1, d1)) / mag(n1);
+  return dist;
+}
+
 vec3 tovec3(vec2 vec)
 {
     return {vec.m_x, vec.m_y, 0};

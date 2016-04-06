@@ -44,10 +44,10 @@ public:
   std::vector<actor> * getActors() {return &m_actors;}
   std::vector<navPoint> * getNavPoints() {return &m_navCloud;}
   navPoint getNavPoint(size_t i) {return m_navCloud[i];}
-  void getNearestNavPoint(vec3 _p, kdtree *_inputNode, navPoint * _best, std::vector<std::pair<kdtree *, bool> > *_path);
+  void getNearestNavPoint(vec3 _p, kdtree *_inputNode, navPoint ** _best, std::vector<std::pair<kdtree *, bool> > *_path);
 
-  void addActor(const vec3 _p);
-  void calcPath(actor * _a, navPoint *_start, navPoint *_end);
+  std::vector<vec3> addActor(navPoint * _p);
+  std::vector<vec3> calcPath(actor * _a, navPoint *_start, navPoint *_end);
   void tracePath(actor * _a, navPoint *_start, navPoint *_end);
 };
 

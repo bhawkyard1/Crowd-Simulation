@@ -50,6 +50,7 @@ void NGLScene::resizeGL(int _w , int _h)
 }
 
 void NGLScene::initializeGL()
+
 {
   // we must call that first before any other GL commands to load and link the
   // gl commands from the lib, if that is not done program will crash
@@ -94,8 +95,12 @@ void NGLScene::initializeGL()
   constructNavCloud();
 
   navPoint pt = m_sim.getNavPoint(rand() % m_sim.getNavPoints()->size());
-  vec3 spos = pt.m_pos;
-  m_sim.addActor(spos);
+  std::vector<vec3> pathpts = m_sim.addActor(&pt);
+  for(int i = 0; i < 1000; ++i)
+  {
+    navPoint pt = m_sim.getNavPoint(rand() % m_sim.getNavPoints()->size());
+    m_sim.addActor(&pt);
+  }
 
   glGenVertexArrays(1, &m_navConnectionsVAO);
   glBindVertexArray(m_navConnectionsVAO);
@@ -128,6 +133,32 @@ void NGLScene::initializeGL()
   glEnableVertexAttribArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, conBuff);
   glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, 0 );
+  glBindVertexArray(0);
+
+
+  glGenVertexArrays(1, &m_navPathVAO);
+  glBindVertexArray(m_navPathVAO);
+
+  std::vector<ngl::Vec3> stuff;
+  for(auto &i : pathpts) stuff.push_back( ngl::Vec3(i.m_x, i.m_y, i.m_z) );
+  m_navPathSize = stuff.size();
+
+  //Generate a VBO
+  GLuint pathBuff;
+  glGenBuffers(1, &pathBuff);
+  glBindBuffer(GL_ARRAY_BUFFER, pathBuff);
+  glBufferData(GL_ARRAY_BUFFER,
+               sizeof(ngl::Vec3) * stuff.size(),
+               &stuff[0].m_x,
+      GL_STATIC_DRAW
+      );
+
+  glEnableVertexAttribArray(0);
+  glBindBuffer(GL_ARRAY_BUFFER, pathBuff);
+  glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, 0 );
+  glBindVertexArray(0);
+
+  startTimer(10);
 }
 
 void NGLScene::createShaderProgram(const std::string _name, const std::string _vert, const std::string _frag)
@@ -212,7 +243,18 @@ void NGLScene::paintGL()
 
   loadMatricesToShader();
 
+  glLineWidth(1.0f);
   glDrawArraysEXT(GL_LINES, 0, m_navConnectionsSize);
+  glBindVertexArray(0);
+
+
+  shader->setRegisteredUniform("inColour", ngl::Vec4(0.0f, 1.0f, 1.0f, 1.0f));
+  glBindVertexArray(m_navPathVAO);
+
+  loadMatricesToShader();
+
+  glLineWidth(2.0f);
+  glDrawArraysEXT(GL_LINE_STRIP, 0, m_navPathSize);
   glBindVertexArray(0);
 }
 
@@ -335,4 +377,10 @@ void NGLScene::constructNavCloud()
   }
 
   m_sim.generateNavConnections(20.0f);
+}
+
+void NGLScene::timerEvent(QTimerEvent *_event)
+{
+  m_sim.update(0.01f);
+  update();
 }
