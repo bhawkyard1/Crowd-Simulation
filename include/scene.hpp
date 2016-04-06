@@ -19,7 +19,7 @@ struct kdtree
 {
   int m_axis;
   navPoint * m_node;
-  std::pair<std::unique_ptr<kdtree>, std::unique_ptr<kdtree>> m_children;
+  std::pair<kdtree*, kdtree*> m_children;
 };
 
 class scene
@@ -39,12 +39,12 @@ public:
   void generateNavConnections(const float _threshold);
   void partitionNavs(std::vector< std::vector<navPoint *> > * _partitions, std::vector<navPoint *> _ents, aabb _box, int lvl, int minCount, int maxLvl);
 
-  std::unique_ptr<kdtree> genKDT(std::unique_ptr<kdtree> _cur, std::vector<navPoint *> _ents, int _axis, int * _c);
+  kdtree * genKDT(kdtree *_cur, std::vector<navPoint *> _ents, int _axis, int * _a);
 
   std::vector<actor> * getActors() {return &m_actors;}
   std::vector<navPoint> * getNavPoints() {return &m_navCloud;}
   navPoint getNavPoint(size_t i) {return m_navCloud[i];}
-  void getNearestNavPoint(vec3 _p, std::unique_ptr<kdtree>& _inputNode, navPoint * _best, std::vector<std::unique_ptr<kdtree>*>* _path);
+  void getNearestNavPoint(vec3 _p, kdtree *_inputNode, navPoint * _best, std::vector<std::pair<kdtree *, bool> > *_path);
 
   void addActor(const vec3 _p);
   void calcPath(actor * _a, navPoint *_start, navPoint *_end);

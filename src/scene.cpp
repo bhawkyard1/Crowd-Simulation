@@ -76,20 +76,21 @@ void scene::generateNavConnections(const float _threshold)
   for(size_t i = 0; i < initEnts.size() / 2; ++i) left.push_back(initEnts[i]);
   for(size_t i = initEnts.size() / 2 + 1; i < initEnts.size(); ++i) right.push_back(initEnts[i]);
 
-  int bob = 0;
+  int a = 0;
   std::cout << "pre" << std::endl;
-  std::unique_ptr<kdtree> in (&m_tree);
+  kdtree * in = &m_tree;
   std::cout << "pre2" << std::endl;
-  m_tree.m_children.first = genKDT(std::move(in), left, 1, &bob);
-  m_tree.m_children.second = genKDT(std::move(in), right, 1, &bob);
-  std::cout << "bob " << bob << std::endl;
-  /*for(auto &i : m_navCloud)
+  m_tree.m_children.first = genKDT(in, left, 0, &a);
+  m_tree.m_children.second = genKDT(in, right, 0, &a);
+
+  std::cout << "post " << a << std::endl;
+  for(auto &i : m_navCloud)
   {
     navPoint * best = nullptr;
-    std::vector<std::unique_ptr<kdtree>*> path;
-    std::unique_ptr<kdtree> input (&m_tree);
+    std::vector<std::pair<kdtree*,bool>> path;
+    kdtree * input = &m_tree;
     getNearestNavPoint(i.m_pos, input, best, &path);
-  }*/
+  }
 
 
   //Partition navPoints
@@ -164,9 +165,11 @@ void scene::partitionNavs(std::vector< std::vector<navPoint *> > * _partitions, 
   }
 }
 
-std::unique_ptr<kdtree> scene::genKDT(std::unique_ptr<kdtree> _cur, std::vector<navPoint *> _ents, int _axis)
+kdtree * scene::genKDT(kdtree * _cur, std::vector<navPoint *> _ents, int _axis, int * _a)
 {
-  //if(cur == nullptr) return nullptr;
+  std::cout << "a is " << *_a << std::endl;
+  (*_a)++;
+  if(_cur == nullptr) return nullptr;
   std::cout << "p1" << std::endl;
   if(_axis == 0) std::sort(_ents.begin(), _ents.end(), lessX);
   else if(_axis == 1) std::sort(_ents.begin(), _ents.end(), lessY);
@@ -183,7 +186,7 @@ std::unique_ptr<kdtree> scene::genKDT(std::unique_ptr<kdtree> _cur, std::vector<
   _axis += 1;
   if(_axis > 3) _axis = 0;
   std::cout << "p3.5" << std::endl;
-  std::unique_ptr<kdtree> newTree (new kdtree);
+  kdtree * newTree = new kdtree;
   std::cout << "p3.6 " << _ents.size() << ", " << (newTree == nullptr) << std::endl;
   //pcur->m_node = _ents[index];
   //std::cout << "p4" << std::endl;
@@ -203,8 +206,8 @@ std::unique_ptr<kdtree> scene::genKDT(std::unique_ptr<kdtree> _cur, std::vector<
     _cur->m_axis = _axis;
     std::cout << "recurse it!" << std::endl;
     _cur->m_node = _ents[index];
-    if(left.size() > 0) _cur->m_children.first = genKDT(std::move(newTree), left, _axis, _bob);
-    if(right.size() > 0) _cur->m_children.second = genKDT(std::move(newTree), right, _axis, _bob);
+    if(left.size() > 0) _cur->m_children.first = genKDT(newTree, left, _axis, _a);
+    if(right.size() > 0) _cur->m_children.second = genKDT(newTree, right, _axis, _a);
   }
   std::cout << "recursion end " << &_cur << std::endl;
   return _cur;
@@ -336,7 +339,7 @@ void scene::calcPath(actor *_a, navPoint *_start, navPoint *_end)
   }
 }
 
-void scene::getNearestNavPoint(vec3 _p, std::unique_ptr<kdtree>& _inputNode, navPoint * _best, std::vector<std::unique_ptr<kdtree>*>* _path)
+void scene::getNearestNavPoint(vec3 _p, kdtree * _inputNode, navPoint * _best, std::vector<std::pair<kdtree*, bool>>* _path)
 {
   bool goLeft = true;
   if(_inputNode->m_axis == 0)
@@ -361,7 +364,7 @@ void scene::getNearestNavPoint(vec3 _p, std::unique_ptr<kdtree>& _inputNode, nav
     }
   }
   std::cout << "p1 " << (_inputNode == nullptr) << std::endl;
-  _path->push_back(&_inputNode);
+  _path->push_back({_inputNode, goLeft});
   std::cout << "p2 " << (_inputNode->m_children.first == nullptr) << ", " << (_inputNode->m_children.second == nullptr) << std::endl;
 
   if(goLeft)
