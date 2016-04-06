@@ -13,8 +13,15 @@ void actor::update(float _dt)
     float dist = magns(getPos() - m_waypoints[m_index]);
     if(dist < 1.0f)
     {
-      m_index++;
-      setVel(unit(m_waypoints[m_index] - getPos()));
+      if(m_index < m_waypoints.size() - 1)
+      {
+        m_index++;
+        setVel(unit(m_waypoints[m_index] - getPos()));
+      }
+      else if(m_index == m_waypoints.size() - 1)
+      {
+        setVel({0.0f, 0.0f, 0.0f});
+      }
     }
   }
   updatePos(_dt);

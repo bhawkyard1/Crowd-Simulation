@@ -287,15 +287,15 @@ std::unique_ptr<kdtree> scene::genKDT(std::unique_ptr<kdtree> _cur, std::vector<
 */
 std::vector<vec3> scene::addActor(navPoint * _p)
 {
-  std::cout << "yo! " << _p->m_pos.m_x << ", " << _p->m_pos.m_y << ", " << _p->m_pos.m_z << std::endl;
+  //std::cout << "yo! " << _p->m_pos.m_x << ", " << _p->m_pos.m_y << ", " << _p->m_pos.m_z << std::endl;
   actor a (_p->m_pos);
-  std::cout << "yo! " << a.getPos().m_x << ", " << a.getPos().m_y << ", " << a.getPos().m_z << std::endl;
+  //std::cout << "yo! " << a.getPos().m_x << ", " << a.getPos().m_y << ", " << a.getPos().m_z << std::endl;
   navPoint * npt = &m_navCloud[rand() % m_navCloud.size()];
   a.setTPos(npt->getPos());
   m_actors.push_back(a);
 
   std::vector<vec3> ret = calcPath(&m_actors.back(), _p, npt);
-  std::cout << "yo! " << m_actors.back().getPos().m_x << ", " << m_actors.back().getPos().m_y << ", " << m_actors.back().getPos().m_z << std::endl;
+  //std::cout << "yo! " << m_actors.back().getPos().m_x << ", " << m_actors.back().getPos().m_y << ", " << m_actors.back().getPos().m_z << std::endl;
   return ret;
 }
 
@@ -321,17 +321,17 @@ std::vector<vec3> scene::calcPath(actor *_a, navPoint *_start, navPoint *_end)
   bool once = true;
   while((openList.size() > 0 or once) and std::find(closedList.begin(), closedList.end(), _end) == closedList.end())
   {
-    std::cout << "p1" << std::endl;
+    //std::cout << "p1" << std::endl;
     //Loop through the neighbours of the node at the end of the open list (i.e. node with the lowest f cost.)
     for(auto &i : closedList.back()->m_neighbours)
     {
-      std::cout << "p1.1" << std::endl;
+      //std::cout << "p1.1" << std::endl;
       //If the considered node is already on the closed list, skip it.
       if(std::find(closedList.begin(), closedList.end(), i) != closedList.end()) continue;
 
       bool alreadyOnOpenList = false;
       auto entry = openList.begin();
-      std::cout << "p1.2" << std::endl;
+      //std::cout << "p1.2" << std::endl;
       for(auto j = openList.begin(); j != openList.end(); ++j)
       {
         if(j->first.first == i)
@@ -340,7 +340,7 @@ std::vector<vec3> scene::calcPath(actor *_a, navPoint *_start, navPoint *_end)
           alreadyOnOpenList = true;
         }
       }
-      std::cout << "p1.3" << std::endl;
+      //std::cout << "p1.3" << std::endl;
       if(!alreadyOnOpenList)
       {
         //If the neigbour is NOT on the open list, insert in the correct place.
@@ -377,7 +377,7 @@ std::vector<vec3> scene::calcPath(actor *_a, navPoint *_start, navPoint *_end)
       }
       once = false;
     }
-    std::cout << "p2" << std::endl;
+    //std::cout << "p2" << std::endl;
     closedList.push_back(openList.back().first.first);
     openList.pop_back();
   }

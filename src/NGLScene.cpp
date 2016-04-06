@@ -89,14 +89,14 @@ void NGLScene::initializeGL()
 
   // get the VBO instance and draw the built in teapot
   ngl::VAOPrimitives * prim=ngl::VAOPrimitives::instance();
-  prim->createCapsule("capsule", 0.2f, 0.4f, 20);
+  prim->createCapsule("capsule", 0.2f, 0.4f, 8);
   prim->createSphere("sphere", 0.1f, 8);
 
   constructNavCloud();
 
   navPoint pt = m_sim.getNavPoint(rand() % m_sim.getNavPoints()->size());
   std::vector<vec3> pathpts = m_sim.addActor(&pt);
-  for(int i = 0; i < 1000; ++i)
+  for(int i = 0; i < 50000; ++i)
   {
     navPoint pt = m_sim.getNavPoint(rand() % m_sim.getNavPoints()->size());
     m_sim.addActor(&pt);
