@@ -39,7 +39,7 @@ public:
   void generateNavConnections(const float _threshold);
   void partitionNavs(std::vector< std::vector<navPoint *> > * _partitions, std::vector<navPoint *> _ents, aabb _box, int lvl, int minCount, int maxLvl);
 
-  std::unique_ptr<kdtree> genKDT(std::unique_ptr<kdtree> _cur, std::vector<navPoint *> _ents, int _axis, int * _c);
+  std::unique_ptr<kdtree> genKDT(std::unique_ptr<kdtree> _cur, std::vector<navPoint *> _ents, int _axis);
 
   std::vector<actor> * getActors() {return &m_actors;}
   std::vector<navPoint> * getNavPoints() {return &m_navCloud;}
