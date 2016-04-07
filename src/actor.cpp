@@ -1,9 +1,11 @@
+#include "util.hpp"
 #include "actor.hpp"
 
 actor::actor(vec3 _pos)
 {
   setPos(_pos);
   m_index = 0;
+  m_maxSpeed = randFloat(1.0f, 4.0f);
 }
 
 void actor::update(float _dt)
@@ -16,7 +18,7 @@ void actor::update(float _dt)
       if(m_index < m_waypoints.size() - 1)
       {
         m_index++;
-        setVel(unit(m_waypoints[m_index] - getPos()));
+        addVel(unit(m_waypoints[m_index] - getPos()));
       }
       else if(m_index == m_waypoints.size() - 1)
       {
@@ -25,4 +27,21 @@ void actor::update(float _dt)
     }
   }
   updatePos(_dt);
+}
+
+void actor::accelerate(vec3 _dir)
+{
+  float projectedSpeed = magns(getVel() + _dir);
+
+  //If entity will speed up, AND be over max speed, truncate (to max speed).
+  if(projectedSpeed > magns(getVel()) and projectedSpeed > sqr(m_maxSpeed))
+  {
+    projectedSpeed = sqrt(projectedSpeed);
+    float toAdd = m_maxSpeed - projectedSpeed;
+    addVel(_dir * toAdd);
+  }
+  else
+  {
+    addVel(_dir);
+  }
 }

@@ -23,6 +23,7 @@ public:
   void addWaypoint(const vec3 _p) {m_waypoints.push_back(_p);}
   std::vector<vec3> getWaypoints() {return m_waypoints;}
   void updateDir();
+  void accelerate(vec3 _dir);
 };
 
 #endif

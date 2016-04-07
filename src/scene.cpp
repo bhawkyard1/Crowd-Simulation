@@ -317,7 +317,7 @@ std::vector<vec3> scene::calcPath(actor *_a, navPoint *_start, navPoint *_end)
   //Add the start node to the closed list.
   closedList.push_back(_start);
 
-  std::cout << "p0" << std::endl;
+  //std::cout << "p0" << std::endl;
   bool once = true;
   while((openList.size() > 0 or once) and std::find(closedList.begin(), closedList.end(), _end) == closedList.end())
   {

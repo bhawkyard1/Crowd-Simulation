@@ -96,8 +96,9 @@ void NGLScene::initializeGL()
 
   navPoint pt = m_sim.getNavPoint(rand() % m_sim.getNavPoints()->size());
   std::vector<vec3> pathpts = m_sim.addActor(&pt);
-  for(int i = 0; i < 50000; ++i)
+  for(int i = 0; i < 10000; ++i)
   {
+    std::cout << "Actor " << i << std::endl;
     navPoint pt = m_sim.getNavPoint(rand() % m_sim.getNavPoints()->size());
     m_sim.addActor(&pt);
   }
@@ -218,7 +219,7 @@ void NGLScene::paintGL()
 
   for(auto &i : *m_sim.getActors())
   {
-    m_transform.setPosition(i.getPos().m_x, i.getPos().m_y, i.getPos().m_z);
+    m_transform.setPosition(i.getPos().m_x, i.getPos().m_y + 0.4f, i.getPos().m_z);
     loadMatricesToShader();
     prim->draw("capsule");
     m_transform.reset();

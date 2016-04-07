@@ -10,3 +10,13 @@ float fastInvSqrt(float _val)
     _val = _val * (1.5f - half * _val * _val); // Newton step, repeating increases accuracy
     return _val;
 }
+
+float randFloat(float low, float high)
+{
+  return static_cast <float> (rand()) / static_cast <float> (RAND_MAX/(high-low))+low;
+}
+
+float sqr(float _arg)
+{
+  return _arg * _arg;
+}

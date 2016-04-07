@@ -6,6 +6,8 @@
 #include "AABB.hpp"
 
 float fastInvSqrt(float _val);
+float randFloat(float low, float high);
+float sqr(float _arg);
 
 template<typename tt>
 bool inRange(tt val, tt low, tt high)
