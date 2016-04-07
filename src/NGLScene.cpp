@@ -349,11 +349,11 @@ void NGLScene::wheelEvent(QWheelEvent *_event)
   // check the diff of the wheel position (0 means no change)
   if(_event->delta() > 0)
   {
-    m_modelPos.m_z+=ZOOM;
+    m_modelPos.m_z+=ZOOM * 20.0f;
   }
   else if(_event->delta() <0 )
   {
-    m_modelPos.m_z-=ZOOM;
+    m_modelPos.m_z-=ZOOM * 20.0f;
   }
   update();
 }
@@ -361,12 +361,12 @@ void NGLScene::wheelEvent(QWheelEvent *_event)
 
 void NGLScene::keyPressEvent(QKeyEvent *_event)
 {
-  /*size_t gen1 = rand() % m_sim.getNavPoints()->size();
+  size_t gen1 = rand() % m_sim.getNavPoints()->size();
   size_t gen2 = rand() % m_sim.getNavPoints()->size();
 
   actor * in = &(*m_sim.getActors())[0];
   navPoint np1 = m_sim.getNavPoint(gen1);
-  navPoint np2 = m_sim.getNavPoint(gen2);*/
+  navPoint np2 = m_sim.getNavPoint(gen2);
 
   // that method is called every time the main window recives a key event.
   // we then switch on the key value and set the camera in the GLWindow
@@ -383,8 +383,8 @@ void NGLScene::keyPressEvent(QKeyEvent *_event)
     // show windowed
   case Qt::Key_N : showNormal(); break;
   case Qt::Key_R :
-    //in->setTPos( m_sim.getNavPoint(gen1).m_pos );
-    //m_sim.calcPath( in, &np1, &np2 );
+    in->setTPos( m_sim.getNavPoint(gen1).m_pos );
+    m_pathpts = m_sim.calcPath( in, &np1, &np2 );
     break;
   default : break;
   }

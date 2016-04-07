@@ -120,7 +120,7 @@ void scene::generateNavConnections(const float _threshold)
       }
       else
       {
-        temp.erase( temp.begin() + 4, temp.end() );
+        temp.erase( temp.begin() + 8, temp.end() );
         float dist = magns(j.m_pos - i.m_pos);
         for(int k = 0; k < 8; ++k)
         {
