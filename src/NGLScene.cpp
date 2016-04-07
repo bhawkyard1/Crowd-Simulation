@@ -95,12 +95,14 @@ void NGLScene::initializeGL()
   constructNavCloud();
 
   navPoint pt = m_sim.getNavPoint(rand() % m_sim.getNavPoints()->size());
-  std::vector<vec3> pathpts = m_sim.addActor(&pt);
+  m_pathpts = m_sim.addActor(&pt);
+  std::cout << "len of pathpts is " << m_pathpts.size() << std::endl;
+
   for(int i = 0; i < 10000; ++i)
   {
-    std::cout << "Actor " << i << std::endl;
+    /*std::cout << "Actor " << i << std::endl;
     navPoint pt = m_sim.getNavPoint(rand() % m_sim.getNavPoints()->size());
-    m_sim.addActor(&pt);
+    m_sim.addActor(&pt);*/
   }
 
   glGenVertexArrays(1, &m_navConnectionsVAO);
@@ -141,7 +143,7 @@ void NGLScene::initializeGL()
   glBindVertexArray(m_navPathVAO);
 
   std::vector<ngl::Vec3> stuff;
-  for(auto &i : pathpts) stuff.push_back( ngl::Vec3(i.m_x, i.m_y, i.m_z) );
+  for(auto &i : m_pathpts) stuff.push_back( ngl::Vec3(i.m_x, i.m_y, i.m_z) );
   m_navPathSize = stuff.size();
 
   //Generate a VBO
@@ -229,14 +231,26 @@ void NGLScene::paintGL()
   shader->setRegisteredUniform("inColour", ngl::Vec4(0.3f, 0.3f, 0.3f, 1.0f));
   m_terrain->draw();
 
-  shader->setRegisteredUniform("inColour", ngl::Vec4(0.8f, 0.03f, 0.03f, 1.0f));
+  shader->setRegisteredUniform("inColour", ngl::Vec4(0.03f, 0.03f, 0.8f, 1.0f));
   for(auto &i : *m_sim.getNavPoints())
   {
     m_transform.setPosition(i.m_pos.m_x, i.m_pos.m_y, i.m_pos.m_z);
     loadMatricesToShader();
+    //prim->draw("sphere");
+    m_transform.reset();
+  }
+
+  //std::cout << "pre " << m_pathpts.size() << std::endl;
+  shader->setRegisteredUniform("inColour", ngl::Vec4(0.03f, 0.03f, 0.8f, 1.0f));
+  for(auto &i : m_pathpts)
+  {
+    m_transform.setPosition(i.m_x, i.m_y, i.m_z);
+    //m_transform.setPosition(0.0, i.m_y, i.m_z);
+    loadMatricesToShader();
     prim->draw("sphere");
     m_transform.reset();
   }
+  //std::cout << "post" << std::endl;
 
   shader->use("colour");
   shader->setRegisteredUniform("inColour", ngl::Vec4(0.8f, 0.03f, 0.03f, 1.0f));
@@ -347,6 +361,13 @@ void NGLScene::wheelEvent(QWheelEvent *_event)
 
 void NGLScene::keyPressEvent(QKeyEvent *_event)
 {
+  /*size_t gen1 = rand() % m_sim.getNavPoints()->size();
+  size_t gen2 = rand() % m_sim.getNavPoints()->size();
+
+  actor * in = &(*m_sim.getActors())[0];
+  navPoint np1 = m_sim.getNavPoint(gen1);
+  navPoint np2 = m_sim.getNavPoint(gen2);*/
+
   // that method is called every time the main window recives a key event.
   // we then switch on the key value and set the camera in the GLWindow
   switch (_event->key())
@@ -361,6 +382,10 @@ void NGLScene::keyPressEvent(QKeyEvent *_event)
   case Qt::Key_F : showFullScreen(); break;
     // show windowed
   case Qt::Key_N : showNormal(); break;
+  case Qt::Key_R :
+    //in->setTPos( m_sim.getNavPoint(gen1).m_pos );
+    //m_sim.calcPath( in, &np1, &np2 );
+    break;
   default : break;
   }
   // finally update the GLWindow and re-draw
@@ -382,6 +407,6 @@ void NGLScene::constructNavCloud()
 
 void NGLScene::timerEvent(QTimerEvent *_event)
 {
-  m_sim.update(0.01f);
+  m_sim.update(0.05f);
   update();
 }

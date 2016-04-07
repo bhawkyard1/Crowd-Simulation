@@ -159,6 +159,8 @@ private:
 
     GLuint m_navPathVAO;
     size_t m_navPathSize;
+
+    std::vector<vec3> m_pathpts;
 };
 
 

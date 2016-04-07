@@ -113,7 +113,7 @@ void scene::generateNavConnections(const float _threshold)
     for(auto &j : m_navCloud)
     {
       if(&j == &i) continue;
-      if(temp.size() < 4)
+      if(temp.size() < 8)
       {
         temp.push_back(&j);
         continue;
@@ -122,7 +122,7 @@ void scene::generateNavConnections(const float _threshold)
       {
         temp.erase( temp.begin() + 4, temp.end() );
         float dist = magns(j.m_pos - i.m_pos);
-        for(int k = 0; k < 4; ++k)
+        for(int k = 0; k < 8; ++k)
         {
           if(magns(temp[k]->m_pos - i.m_pos) > dist)
           {
