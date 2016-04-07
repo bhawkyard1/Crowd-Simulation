@@ -2955,8 +2955,10 @@ obj\AABB.obj: src\AABB.cpp include/AABB.hpp \
 		include/vectors.hpp \
 		include/util.hpp
 
-obj\actor.obj: src\actor.cpp include/actor.hpp \
+obj\actor.obj: src\actor.cpp include/util.hpp \
+		include/AABB.hpp \
 		include/vectors.hpp \
+		include/actor.hpp \
 		include/base.hpp
 
 obj\base.obj: src\base.cpp 
