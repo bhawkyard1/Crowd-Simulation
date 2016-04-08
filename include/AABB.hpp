@@ -31,6 +31,34 @@ aabb enclose(std::vector<tt> _objs)
 
   for(auto &i : _objs)
   {
+    vec3 p = i.getPos();
+
+    if(p.m_x < min.m_x) min.m_x = p.m_x;
+    if(p.m_y < min.m_y) min.m_y = p.m_y;
+    if(p.m_z < min.m_z) min.m_z = p.m_z;
+
+    if(p.m_x > max.m_x) max.m_x = p.m_x;
+    if(p.m_y > max.m_y) max.m_y = p.m_y;
+    if(p.m_z > max.m_z) max.m_z = p.m_z;
+  }
+
+  aabb ret = {min, max - min};
+
+  /*std::cout << "LEN " << _objs.size() << std::endl;
+  std::cout << "GENERATED AABB: (" << ret.m_pos.m_x << ", " << ret.m_pos.m_y << ", " << ret.m_pos.m_z << ") ("
+            << ret.m_dim.m_x << ", " << ret.m_dim.m_y << ", " << ret.m_dim.m_z << ")" << std::endl;*/
+
+  return ret;
+}
+
+template<typename tt>
+aabb enclose(std::vector<tt*> _objs)
+{
+  vec3 min = {F_INF, F_INF, F_INF};
+  vec3 max = {-F_INF, -F_INF, -F_INF};
+
+  for(auto &i : _objs)
+  {
     vec3 p = i->getPos();
 
     if(p.m_x < min.m_x) min.m_x = p.m_x;

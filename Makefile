@@ -52,6 +52,8 @@ SOURCES       = main.cpp \
 		src/AABB.cpp \
 		src/actor.cpp \
 		src/base.cpp \
+		src/common.cpp \
+		src/kdtree.cpp \
 		src/navPoint.cpp \
 		src/NGLScene.cpp \
 		src/object.cpp \
@@ -64,6 +66,8 @@ OBJECTS       = obj/main.o \
 		obj/AABB.o \
 		obj/actor.o \
 		obj/base.o \
+		obj/common.o \
+		obj/kdtree.o \
 		obj/navPoint.o \
 		obj/NGLScene.o \
 		obj/object.o \
@@ -77,6 +81,8 @@ DIST          = crowd.pro include/base.hpp \
 		include/AABB.hpp \
 		include/actor.hpp \
 		include/base.hpp \
+		include/common.hpp \
+		include/kdtree.hpp \
 		include/navPoint.hpp \
 		include/NGLScene.hpp \
 		include/object.hpp \
@@ -88,6 +94,8 @@ DIST          = crowd.pro include/base.hpp \
 		src/AABB.cpp \
 		src/actor.cpp \
 		src/base.cpp \
+		src/common.cpp \
+		src/kdtree.cpp \
 		src/navPoint.cpp \
 		src/NGLScene.cpp \
 		src/object.cpp \
@@ -415,8 +423,8 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents include/base.hpp include/AABB.hpp include/actor.hpp include/base.hpp include/navPoint.hpp include/NGLScene.hpp include/object.hpp include/scene.hpp include/shader.hpp include/sim_time.hpp include/util.hpp include/vectors.hpp $(DISTDIR)/
-	$(COPY_FILE) --parents main.cpp src/AABB.cpp src/actor.cpp src/base.cpp src/navPoint.cpp src/NGLScene.cpp src/object.cpp src/scene.cpp src/shader.cpp src/sim_time.cpp src/util.cpp src/vectors.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents include/base.hpp include/AABB.hpp include/actor.hpp include/base.hpp include/common.hpp include/kdtree.hpp include/navPoint.hpp include/NGLScene.hpp include/object.hpp include/scene.hpp include/shader.hpp include/sim_time.hpp include/util.hpp include/vectors.hpp $(DISTDIR)/
+	$(COPY_FILE) --parents main.cpp src/AABB.cpp src/actor.cpp src/base.cpp src/common.cpp src/kdtree.cpp src/navPoint.cpp src/NGLScene.cpp src/object.cpp src/scene.cpp src/shader.cpp src/sim_time.cpp src/util.cpp src/vectors.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -604,6 +612,7 @@ moc/moc_NGLScene.cpp: /home/i7620560/NGL/include/ngl/Camera.h \
 		include/actor.hpp \
 		include/base.hpp \
 		include/AABB.hpp \
+		include/kdtree.hpp \
 		include/NGLScene.hpp
 	/opt/qt/5.5/gcc_64/bin/moc $(DEFINES) -I/opt/qt/5.5/gcc_64/mkspecs/linux-clang -I/home/i7620560/Documents/programming/specialist/crowds/Crowd-Simulation -I/home/i7620560/NGL/include -I/home/i7620560/Documents/programming/specialist/crowds/Crowd-Simulation/include -I/opt/qt/5.5/gcc_64/include -I/opt/qt/5.5/gcc_64/include/QtOpenGL -I/opt/qt/5.5/gcc_64/include/QtWidgets -I/opt/qt/5.5/gcc_64/include/QtGui -I/opt/qt/5.5/gcc_64/include/QtCore include/NGLScene.hpp -o moc/moc_NGLScene.cpp
 
@@ -788,7 +797,8 @@ obj/main.o: main.cpp /opt/qt/5.5/gcc_64/include/QtGui/QGuiApplication \
 		include/vectors.hpp \
 		include/actor.hpp \
 		include/base.hpp \
-		include/AABB.hpp
+		include/AABB.hpp \
+		include/kdtree.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/main.o main.cpp
 
 obj/AABB.o: src/AABB.cpp include/AABB.hpp \
@@ -805,6 +815,14 @@ obj/actor.o: src/actor.cpp include/util.hpp \
 
 obj/base.o: src/base.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/base.o src/base.cpp
+
+obj/common.o: src/common.cpp include/common.hpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/common.o src/common.cpp
+
+obj/kdtree.o: src/kdtree.cpp include/kdtree.hpp \
+		include/vectors.hpp \
+		include/navPoint.hpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/kdtree.o src/kdtree.cpp
 
 obj/navPoint.o: src/navPoint.cpp include/navPoint.hpp \
 		include/vectors.hpp
@@ -979,6 +997,7 @@ obj/NGLScene.o: src/NGLScene.cpp /opt/qt/5.5/gcc_64/include/QtGui/QMouseEvent \
 		include/actor.hpp \
 		include/base.hpp \
 		include/AABB.hpp \
+		include/kdtree.hpp \
 		/home/i7620560/NGL/include/ngl/Material.h \
 		/home/i7620560/NGL/include/ngl/NGLInit.h \
 		/home/i7620560/NGL/include/ngl/Singleton.h \
@@ -987,7 +1006,8 @@ obj/NGLScene.o: src/NGLScene.cpp /opt/qt/5.5/gcc_64/include/QtGui/QMouseEvent \
 		/home/i7620560/NGL/include/ngl/Shader.h \
 		/home/i7620560/NGL/include/ngl/ShaderProgram.h \
 		/home/i7620560/NGL/include/ngl/Util.h \
-		/home/i7620560/NGL/include/ngl/Mat3.h
+		/home/i7620560/NGL/include/ngl/Mat3.h \
+		include/common.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/NGLScene.o src/NGLScene.cpp
 
 obj/object.o: src/object.cpp 
@@ -999,6 +1019,7 @@ obj/scene.o: src/scene.cpp include/scene.hpp \
 		include/actor.hpp \
 		include/base.hpp \
 		include/AABB.hpp \
+		include/kdtree.hpp \
 		include/util.hpp
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/scene.o src/scene.cpp
 

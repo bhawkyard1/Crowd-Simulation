@@ -16,6 +16,7 @@ class actor: public base
   vec3 m_tPos;
   std::vector<vec3> m_waypoints;
   size_t m_index;
+  float m_stepOffset;
 public:
   actor(vec3 _pos);
   void update(float _dt);
@@ -24,6 +25,8 @@ public:
   std::vector<vec3> getWaypoints() {return m_waypoints;}
   void updateDir();
   void accelerate(vec3 _dir);
+  float offset() {return m_stepOffset;}
+  float getMaxSpeed() {return m_maxSpeed;}
 };
 
 #endif

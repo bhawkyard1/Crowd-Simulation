@@ -9,6 +9,8 @@
 #include <ngl/VAOPrimitives.h>
 #include <ngl/ShaderLib.h>
 
+#include "common.hpp"
+
 //----------------------------------------------------------------------------------------------------------------------
 /// @brief the increment for x/y translation with mouse movement
 //----------------------------------------------------------------------------------------------------------------------
@@ -67,6 +69,7 @@ void NGLScene::initializeGL()
 
   createShaderProgram("diffuse", "diffuseVertex", "diffuseFragment");
   createShaderProgram("colour", "colourVertex", "colourFragment");
+  createShaderProgram("line", "vertColourVert", "vertColourFragment");
 
   // the shader will use the currently active material and light0 so set them
   ngl::Material m(ngl::STDMAT::GOLD);
@@ -93,12 +96,12 @@ void NGLScene::initializeGL()
   prim->createSphere("sphere", 0.1f, 8);
 
   constructNavCloud();
-
+  std::cout << "here" << std::endl;
   navPoint pt = m_sim.getNavPoint(rand() % m_sim.getNavPoints()->size());
   m_pathpts = m_sim.addActor(&pt);
   std::cout << "len of pathpts is " << m_pathpts.size() << std::endl;
 
-  for(int i = 0; i < 10; ++i)
+  for(int i = 0; i < 1000; ++i)
   {
     std::cout << "Actor " << i << std::endl;
     navPoint pt = m_sim.getNavPoint(rand() % m_sim.getNavPoints()->size());
@@ -109,8 +112,12 @@ void NGLScene::initializeGL()
   glBindVertexArray(m_navConnectionsVAO);
 
   std::vector<ngl::Vec3> pts;
-  for(auto &np : *m_sim.getNavPoints())
+  std::vector<ngl::Vec3> normals;
+  std::vector<ngl::Vec3> meshNorms = m_terrain->getNormalList();
+
+  for(size_t n = 0; n < m_sim.getNavPoints()->size(); ++n)
   {
+    navPoint np = m_sim.getNavPoint(n);
     for(auto &npc : np.m_neighbours)
     {
       vec3 npp = np.getPos();
@@ -118,6 +125,14 @@ void NGLScene::initializeGL()
 
       pts.push_back(ngl::Vec3(npp.m_x, npp.m_y, npp.m_z));
       pts.push_back(ngl::Vec3(npcp.m_x, npcp.m_y, npcp.m_z));
+
+      meshNorms[n].normalize();
+      float normY = (meshNorms[n].m_y - 0.9f) * 10.0f;
+      std::cout << "yo " << meshNorms[n].m_x << ", " << meshNorms[n].m_y << ", " << meshNorms[n].m_z << std::endl;
+      normals.push_back({1.0f - normY, normY, 0.0f});
+      normals.push_back({1.0f - normY, normY, 0.0f});
+      //normals.push_back({0.0f, 1.0f, 0.0f});
+      //normals.push_back({0.0f, 1.0f, 0.0f});
     }
   }
 
@@ -136,6 +151,19 @@ void NGLScene::initializeGL()
   glEnableVertexAttribArray(0);
   glBindBuffer(GL_ARRAY_BUFFER, conBuff);
   glVertexAttribPointer( 0, 3, GL_FLOAT, GL_FALSE, 0, 0 );
+
+  GLuint conColBuff;
+  glGenBuffers(1, &conColBuff);
+  glBindBuffer(GL_ARRAY_BUFFER, conColBuff);
+  glBufferData(GL_ARRAY_BUFFER,
+               sizeof(ngl::Vec3) * normals.size(),
+               &normals[0].m_x,
+      GL_STATIC_DRAW
+      );
+
+  glEnableVertexAttribArray(1);
+  glBindBuffer(GL_ARRAY_BUFFER, conColBuff);
+  glVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, 0, 0 );
   glBindVertexArray(0);
 
 
@@ -221,7 +249,9 @@ void NGLScene::paintGL()
 
   for(auto &i : *m_sim.getActors())
   {
-    m_transform.setPosition(i.getPos().m_x, i.getPos().m_y + 0.4f, i.getPos().m_z);
+    float yadd = fabs(sin(rad(i.offset() + g_globalTime) * mag(i.getVel()))) * 0.5f;
+
+    m_transform.setPosition(i.getPos().m_x, i.getPos().m_y + 0.4f + yadd, i.getPos().m_z);
     loadMatricesToShader();
     prim->draw("capsule");
     m_transform.reset();
@@ -252,8 +282,7 @@ void NGLScene::paintGL()
   }
   //std::cout << "post" << std::endl;
 
-  shader->use("colour");
-  shader->setRegisteredUniform("inColour", ngl::Vec4(0.8f, 0.03f, 0.03f, 1.0f));
+  shader->use("line");
   glBindVertexArray(m_navConnectionsVAO);
 
   loadMatricesToShader();
@@ -361,13 +390,7 @@ void NGLScene::wheelEvent(QWheelEvent *_event)
 
 void NGLScene::keyPressEvent(QKeyEvent *_event)
 {
-  size_t gen1 = rand() % m_sim.getNavPoints()->size();
-  size_t gen2 = rand() % m_sim.getNavPoints()->size();
-
-  actor * in = &(*m_sim.getActors())[0];
-  navPoint np1 = m_sim.getNavPoint(gen1);
-  navPoint np2 = m_sim.getNavPoint(gen2);
-
+  navPoint gen = m_sim.getNavPoint(rand() % m_sim.getNavPoints()->size());
   // that method is called every time the main window recives a key event.
   // we then switch on the key value and set the camera in the GLWindow
   switch (_event->key())
@@ -383,8 +406,8 @@ void NGLScene::keyPressEvent(QKeyEvent *_event)
     // show windowed
   case Qt::Key_N : showNormal(); break;
   case Qt::Key_R :
-    in->setTPos( m_sim.getNavPoint(gen1).m_pos );
-    m_pathpts = m_sim.calcPath( in, &np1, &np2 );
+    m_sim.getActors()->clear();
+    m_pathpts = m_sim.addActor( &gen );
     break;
   default : break;
   }
@@ -396,9 +419,10 @@ void NGLScene::keyPressEvent(QKeyEvent *_event)
 void NGLScene::constructNavCloud()
 {
   std::vector<ngl::Vec3> verts = m_terrain->getVertexList();
-  for(auto &i : verts)
+  std::vector<ngl::Vec3> normals = m_terrain->getNormalList();
+  for(size_t i = 0; i < verts.size(); ++i)
   {
-    navPoint pt = {{i.m_x, i.m_y, i.m_z},{}, 1.0f};
+    navPoint pt = {{verts[i].m_x, verts[i].m_y, verts[i].m_z},{}, (normals[i].m_y - 0.9f) * 10.0f};
     m_sim.addPoint(pt);
   }
 
@@ -407,6 +431,12 @@ void NGLScene::constructNavCloud()
 
 void NGLScene::timerEvent(QTimerEvent *_event)
 {
-  m_sim.update(0.05f);
+  m_ms = static_cast<float>(m_timer.elapsed());
+  g_globalTime += m_ms / 10000.0f;
+  std::cout << "elapsed! " << m_ms << std::endl;
+  //if(g_globalTime > 360.0f) g_globalTime -= 360.0f;
+  m_sim.update(m_ms / 1000.0f);
   update();
+
+  m_timer.start();
 }

@@ -10,6 +10,7 @@
 #include <ngl/Transformation.h>
 
 #include <QOpenGLWindow>
+#include <QTime>
 
 #include "scene.hpp"
 
@@ -161,6 +162,9 @@ private:
     size_t m_navPathSize;
 
     std::vector<vec3> m_pathpts;
+
+    QTime m_timer;
+    float m_ms;
 };
 
 

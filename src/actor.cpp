@@ -10,6 +10,7 @@ actor::actor(vec3 _pos)
 
     m_index = 0;
     m_maxSpeed = randFloat(0.5f, 2.0f);
+    m_stepOffset = randFloat(rad(0.0f), rad(360.0f));
 }
 
 void actor::update(float _dt)
@@ -33,6 +34,10 @@ void actor::update(float _dt)
                 setVel({0.0f, 0.0f, 0.0f});
             }
         }
+    }
+    else
+    {
+      setVel({0.0f, 0.0f, 0.0f});
     }
     updatePos(_dt);
 }

@@ -8,30 +8,18 @@
 #include "actor.hpp"
 #include "vectors.hpp"
 #include "AABB.hpp"
-
-struct partition
-{
-  std::vector<actor *> m_actors;
-  std::vector<navPoint *> m_navs;
-};
-
-struct kdtree
-{
-  int m_axis;
-  navPoint * m_node;
-  std::pair<kdtree*, kdtree*> m_children;
-};
+#include "kdtree.hpp"
 
 class scene
 {
   std::vector<actor> m_actors;
   std::vector<navPoint> m_navCloud;
-  std::vector<partition> m_partitions;
+  std::vector<std::vector<actor*>> m_partitions;
   kdtree m_tree;
 public:
   scene();
   void update(float dt);
-  void broadPhase(std::vector<actor *> _ents, std::vector<navPoint *> _p, aabb _box, short int lvl);
+  void broadPhase(std::vector<actor *> _ents, aabb _box, short int lvl);
   void narrowPhase();
   void draw(float update);
   void addPoint(navPoint _p) {m_navCloud.push_back(_p);}
