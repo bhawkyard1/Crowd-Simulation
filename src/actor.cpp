@@ -6,8 +6,10 @@
 actor::actor(vec3 _pos)
 {
     setPos(_pos);
+    setVel({0.0f, 0.0f, 0.0f});
+
     m_index = 0;
-    m_maxSpeed = randFloat(1.00f, 4.00f);
+    m_maxSpeed = randFloat(0.5f, 2.0f);
 }
 
 void actor::update(float _dt)
@@ -16,6 +18,8 @@ void actor::update(float _dt)
     {
         addVel(-getVel() * 0.1f);
         accelerate(unit(m_waypoints[m_index] - getPos()));
+        /*std::cout << "POS : " << getPos().m_x << ", " << getPos().m_y << ", " << getPos().m_z <<
+                     "VEL : " << getVel().m_x << ", " << getVel().m_y << ", " << getVel().m_z << std::endl;*/
         float dist = magns(getPos() - m_waypoints[m_index]);
         if(dist < 1.0f)
         {

@@ -19,6 +19,7 @@ struct aabb
 };
 
 vec3 max(const aabb _box);
+aabb max(const aabb _box1, const aabb _box2);
 bool pointVSAABB(const vec3 _pt, const aabb _box);
 std::vector<aabb> divide(const aabb _src);
 
@@ -30,7 +31,7 @@ aabb enclose(std::vector<tt> _objs)
 
   for(auto &i : _objs)
   {
-    vec3 p = i.getPos();
+    vec3 p = i->getPos();
 
     if(p.m_x < min.m_x) min.m_x = p.m_x;
     if(p.m_y < min.m_y) min.m_y = p.m_y;
@@ -43,9 +44,9 @@ aabb enclose(std::vector<tt> _objs)
 
   aabb ret = {min, max - min};
 
-  std::cout << "LEN " << _objs.size() << std::endl;
+  /*std::cout << "LEN " << _objs.size() << std::endl;
   std::cout << "GENERATED AABB: (" << ret.m_pos.m_x << ", " << ret.m_pos.m_y << ", " << ret.m_pos.m_z << ") ("
-            << ret.m_dim.m_x << ", " << ret.m_dim.m_y << ", " << ret.m_dim.m_z << ")" << std::endl;
+            << ret.m_dim.m_x << ", " << ret.m_dim.m_y << ", " << ret.m_dim.m_z << ")" << std::endl;*/
 
   return ret;
 }

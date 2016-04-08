@@ -8,6 +8,22 @@ vec3 max(const aabb _box)
   return _box.m_pos + _box.m_dim;
 }
 
+aabb max(const aabb _box1, const aabb _box2)
+{
+ aabb ret;
+ ret.m_pos = {
+   fminf(_box1.m_pos.m_x, _box2.m_pos.m_x),
+   fminf(_box1.m_pos.m_y, _box2.m_pos.m_y),
+   fminf(_box1.m_pos.m_z, _box2.m_pos.m_z)
+ };
+ ret.m_dim = {
+   fmaxf(_box1.m_dim.m_x, _box2.m_dim.m_x),
+   fmaxf(_box1.m_dim.m_y, _box2.m_dim.m_y),
+   fmaxf(_box1.m_dim.m_z, _box2.m_dim.m_z)
+ };
+ return ret;
+}
+
 bool pointVSAABB(const vec3 _pt, aabb _box)
 {
   vec3 m = max(_box);

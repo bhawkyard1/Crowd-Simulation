@@ -16,6 +16,13 @@ void scene::update(float _dt)
   {
     i.update(_dt);
   }
+
+  std::vector<actor *> ents;
+  std::vector<navPoint *> navs;
+  for(auto &i : m_actors) ents.push_back(&i);
+  for(auto &i : m_navCloud) navs.push_back(&i);
+  aabb box = max(enclose(ents), enclose(navs));
+  broadPhase(ents, navs, box, 0);
 }
 
 void scene::draw(float dt)
