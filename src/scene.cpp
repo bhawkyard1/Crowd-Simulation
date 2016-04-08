@@ -253,7 +253,7 @@ std::vector<vec3> scene::calcPath(actor *_a, navPoint *_start, navPoint *_end)
       if(!alreadyOnOpenList)
       {
         //If the neigbour is NOT on the open list, insert in the correct place.
-        float cost = mag(i->getPos() - closedList.back()->getPos()) * i->m_weight;
+        float cost = mag(i->getPos() - closedList.back()->getPos()) * (1 / i->m_weight);
         float dist = mag(i->getPos() - _end->getPos());
 
         bool addAtEnd = true;

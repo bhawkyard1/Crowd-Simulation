@@ -44,6 +44,7 @@ void actor::update(float _dt)
 
 void actor::accelerate(vec3 _dir)
 {
+    std::cout << "accel call" << std::endl;
     float projectedSpeed = magns(getVel() + _dir);
 
     //If entity will speed up, AND be over max speed, truncate (to max speed).
