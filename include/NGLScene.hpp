@@ -148,6 +148,8 @@ private:
 
     void timerEvent(QTimerEvent * _event);
 
+    void packPath();
+
     scene m_sim;
     ngl::Obj * m_terrain;
 

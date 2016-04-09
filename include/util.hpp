@@ -14,4 +14,12 @@ bool inRange(tt val, tt low, tt high)
 {
   return val > low and val < high;
 }
+
+template<typename tt>
+tt clamp(tt v, tt m, tt M)
+{
+    if(v < m) return m;
+    else if(v > M) return M;
+    return v;
+}
 #endif

@@ -44,11 +44,15 @@ void actor::update(float _dt)
 
 void actor::accelerate(vec3 _dir)
 {
-    std::cout << "accel call" << std::endl;
-    float projectedSpeed = magns(getVel() + _dir);
+    //float projectedSpeed = magns(getVel() + _dir);
 
+    float drag = clamp(magns(getVel()) / sqr(m_maxSpeed), 0.0f, 1.0f);
+    //std::cout << "accel call " << drag << ", " << _dir.m_x << ", " << _dir.m_y << ", " << _dir.m_z << std::endl;
+    addVel( -getVel() * drag );
+
+    addVel(_dir);
     //If entity will speed up, AND be over max speed, truncate (to max speed).
-    if(projectedSpeed > magns(getVel()) and projectedSpeed > sqr(m_maxSpeed))
+    /*if(projectedSpeed > magns(getVel()) and projectedSpeed > sqr(m_maxSpeed))
     {
         projectedSpeed = sqrt(projectedSpeed);
         float toAdd = m_maxSpeed - projectedSpeed;
@@ -59,5 +63,5 @@ void actor::accelerate(vec3 _dir)
     {
         addVel(_dir);
         //std::cout << "Adding : " << _dir.m_x << ", " << _dir.m_y << ", " << _dir.m_z << " now at " << getVel().m_x << ", " << getVel().m_y << std::endl;
-    }
+    }*/
 }
