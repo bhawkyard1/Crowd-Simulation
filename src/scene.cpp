@@ -313,7 +313,7 @@ std::vector<vec3> scene::calcPath(actor *_a, navPoint *_start, navPoint *_end)
       //std::cout << "check" << std::endl;
       if(closedList[i].first == toSearch)
       {
-        std::cout << "MATCH!" << std::endl;
+        //std::cout << "MATCH!" << std::endl;
         cur = closedList[i];
         reversed.push_back(cur.first);
         break;
