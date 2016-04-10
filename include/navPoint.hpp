@@ -13,6 +13,8 @@ struct navPoint
   vec3 getPos() {return m_pos;}
 };
 
+bool operator ==(const navPoint &lhs, const navPoint &rhs);
+
 bool lessX(const navPoint * a, const navPoint * b);
 bool lessY(const navPoint * a, const navPoint * b);
 bool lessZ(const navPoint * a, const navPoint * b);

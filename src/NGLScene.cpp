@@ -404,7 +404,7 @@ void NGLScene::constructNavCloud()
   for(size_t i = 0; i < verts.size(); ++i)
   {
     //Low weighting = bad
-    navPoint pt = {{verts[i].m_x, verts[i].m_y, verts[i].m_z},{}, (normals[i].m_y - 0.9f) * 10.0f};
+    navPoint pt = {{verts[i].m_x, verts[i].m_y, verts[i].m_z},{}, (normals[i].m_y - 0.9f) * 100.0f};
     m_sim.addPoint(pt);
   }
 
