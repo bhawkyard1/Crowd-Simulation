@@ -10,6 +10,14 @@
 #include "AABB.hpp"
 #include "kdtree.hpp"
 
+struct astarNode
+{
+  navPoint * m_node;
+  float m_cost;
+  float m_dist;
+  navPoint * m_parent;
+};
+
 class scene
 {
   std::vector<actor> m_actors;
