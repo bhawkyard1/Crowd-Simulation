@@ -576,10 +576,11 @@ moc/moc_NGLScene.cpp: /home/i7620560/NGL/include/ngl/Camera.h \
 		/home/i7620560/NGL/include/ngl/Plane.h \
 		/home/i7620560/NGL/include/ngl/AABB.h \
 		/home/i7620560/NGL/include/ngl/BBox.h \
-		/home/i7620560/NGL/include/ngl/VertexArrayObject.h \
+		/home/i7620560/NGL/include/ngl/AbstractVAO.h \
 		/home/i7620560/NGL/include/ngl/Colour.h \
 		/home/i7620560/NGL/include/ngl/Light.h \
 		/home/i7620560/NGL/include/ngl/Text.h \
+		/home/i7620560/NGL/include/ngl/VertexArrayObject.h \
 		/opt/qt/5.5/gcc_64/include/QtCore/QHash \
 		/opt/qt/5.5/gcc_64/include/QtGui/QFont \
 		/home/i7620560/NGL/include/ngl/Obj.h \
@@ -764,10 +765,11 @@ obj/main.o: main.cpp /opt/qt/5.5/gcc_64/include/QtGui/QGuiApplication \
 		/home/i7620560/NGL/include/ngl/Plane.h \
 		/home/i7620560/NGL/include/ngl/AABB.h \
 		/home/i7620560/NGL/include/ngl/BBox.h \
-		/home/i7620560/NGL/include/ngl/VertexArrayObject.h \
+		/home/i7620560/NGL/include/ngl/AbstractVAO.h \
 		/home/i7620560/NGL/include/ngl/Colour.h \
 		/home/i7620560/NGL/include/ngl/Light.h \
 		/home/i7620560/NGL/include/ngl/Text.h \
+		/home/i7620560/NGL/include/ngl/VertexArrayObject.h \
 		/opt/qt/5.5/gcc_64/include/QtCore/QHash \
 		/opt/qt/5.5/gcc_64/include/QtGui/QFont \
 		/home/i7620560/NGL/include/ngl/Obj.h \
@@ -965,10 +967,11 @@ obj/NGLScene.o: src/NGLScene.cpp /opt/qt/5.5/gcc_64/include/QtGui/QMouseEvent \
 		/home/i7620560/NGL/include/ngl/Plane.h \
 		/home/i7620560/NGL/include/ngl/AABB.h \
 		/home/i7620560/NGL/include/ngl/BBox.h \
-		/home/i7620560/NGL/include/ngl/VertexArrayObject.h \
+		/home/i7620560/NGL/include/ngl/AbstractVAO.h \
 		/home/i7620560/NGL/include/ngl/Colour.h \
 		/home/i7620560/NGL/include/ngl/Light.h \
 		/home/i7620560/NGL/include/ngl/Text.h \
+		/home/i7620560/NGL/include/ngl/VertexArrayObject.h \
 		/opt/qt/5.5/gcc_64/include/QtCore/QHash \
 		/opt/qt/5.5/gcc_64/include/QtGui/QFont \
 		/home/i7620560/NGL/include/ngl/Obj.h \

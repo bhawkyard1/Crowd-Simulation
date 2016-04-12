@@ -253,6 +253,7 @@ std::vector<vec3> scene::calcPath(actor *_a, navPoint *_start, navPoint *_end)
         }
       }
 
+      //If the node is not already on the open list, insert it in the proper place.
       if(!alreadyOnOpenList)
       {
         //If the neigbour is NOT on the open list, insert in the correct place.
@@ -283,6 +284,7 @@ std::vector<vec3> scene::calcPath(actor *_a, navPoint *_start, navPoint *_end)
         //If the f cost has NOT been beaten, just stick it on the end of the open list.
         if(addAtEnd) openList.push_back({{i,{cost,dist}},closedList.back().first});
       }
+      //If the node IS already on the open list and it is better than the current node, calculate costs, and move it to the right place.
       else
       {
         //If the neighbour is on the open list, evaluate its dist vs the current square.
@@ -290,6 +292,18 @@ std::vector<vec3> scene::calcPath(actor *_a, navPoint *_start, navPoint *_end)
         if(dist > entry->first.second[1])
         {
           entry->second = closedList.back().first;
+          std::pair<std::pair<navPoint*, std::array<float, 2>>,navPoint*> temp = *entry;
+          openList.erase(entry);
+          for(auto j = openList.begin(); j != openList.end(); ++j)
+          {
+            if(j->first.second[0] + j->first.second[1] < temp.first.second[0] + temp.first.second[1])
+            {
+              std::cout << "pre insert" << std::endl;
+              openList.insert(j, temp);
+              std::cout << "post insert" << std::endl;
+              break;
+            }
+          }
         }
       }
       once = false;
