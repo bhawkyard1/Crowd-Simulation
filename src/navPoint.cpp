@@ -1,3 +1,4 @@
+#include <ciso646>
 #include "navPoint.hpp"
 
 bool operator ==(const navPoint &lhs, const navPoint &rhs)

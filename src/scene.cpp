@@ -98,19 +98,20 @@ void scene::generateNavConnections(const float _threshold)
   {
     std::vector<navPoint *> temp;
     std::cout << "Count " << count << std::endl;
+    int con = 8;
     for(auto &j : m_navCloud)
     {
       if(&j == &i) continue;
-      if(temp.size() < 8)
+      if(temp.size() < con)
       {
         temp.push_back(&j);
         continue;
       }
       else
       {
-        temp.erase( temp.begin() + 8, temp.end() );
+        temp.erase( temp.begin() + con, temp.end() );
         float dist = magns(j.m_pos - i.m_pos);
-        for(int k = 0; k < 8; ++k)
+        for(int k = 0; k < con; ++k)
         {
           if(magns(temp[k]->m_pos - i.m_pos) > dist)
           {
@@ -233,7 +234,7 @@ std::vector<vec3> scene::calcPath(actor *_a, navPoint *_start, navPoint *_end)
     astarNode expandingNode = openList.back();
 
     //Loop through the neighbours of the node at the end of the open list (i.e. node with the lowest f cost.)
-    for(auto &i : openList.back().m_node->m_neighbours)
+    for(auto &i : expandingNode.m_node->m_neighbours)
     {
       //Check if the neighbour is already on the closed list.
       bool alreadyOnClosedList = false;
@@ -241,6 +242,7 @@ std::vector<vec3> scene::calcPath(actor *_a, navPoint *_start, navPoint *_end)
       {
         if(q.m_node == i) alreadyOnClosedList = true;
       }
+      //Skip if it on the closed list.
       if(alreadyOnClosedList) continue;
 
       //Check if the neighbour is already on the open list.
@@ -263,9 +265,8 @@ std::vector<vec3> scene::calcPath(actor *_a, navPoint *_start, navPoint *_end)
         vec3 goalPos = _end->getPos();
         vec3 diff = nodePos - goalPos;
 
-        float cost = expandingNode.m_cost + mag(i->getPos() - expandingNode.m_node->getPos()) * (1 / i->m_weight);
+        float cost = expandingNode.m_cost + mag(i->getPos() - expandingNode.m_node->getPos()) /* (1 / i->m_weight)*/;
         float dist = mag(i->getPos() - _end->getPos());
-        //float dist = 1.0f * (fabs(diff.m_x) + fabs(diff.m_y + fabs(diff.m_z))) + (1.4f - 2.0f) * fmin(diff.m_x, diff.m_y);
 
         bool addAtEnd = true;
         //For each node in the open list, if it beats the current f cost, insert current node just before, then break.
@@ -275,7 +276,6 @@ std::vector<vec3> scene::calcPath(actor *_a, navPoint *_start, navPoint *_end)
           {
             //Insert at k an a-star node, containing:
             openList.insert(k, {i, cost, dist, expandingNode.m_node});
-
             addAtEnd = false;
             break;
           }
@@ -286,15 +286,15 @@ std::vector<vec3> scene::calcPath(actor *_a, navPoint *_start, navPoint *_end)
       //If the node IS already on the open list and it is better than the current node, calculate costs, and move it to the right place.
       else
       {
-        //If the neighbour is on the open list, evaluate its dist vs the current square.
-        float dist = mag(closedList.back().m_node->getPos() - _end->getPos());
-        if(dist > entry->m_dist)
+        float cost = expandingNode.m_cost + mag(entry->m_node->getPos() - expandingNode.m_node->getPos()) /* (1 / i->m_weight)*/;
+        if(cost < entry->m_cost)
         {
           entry->m_parent = expandingNode.m_node;
 
           //Move entry to the correct place.
           astarNode temp = *entry;
           openList.erase(entry);
+
           for(auto j = openList.begin(); j != openList.end(); ++j)
           {
             if(j->m_cost + j->m_dist < temp.m_cost + temp.m_dist)

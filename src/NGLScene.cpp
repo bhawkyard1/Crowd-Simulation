@@ -87,7 +87,7 @@ void NGLScene::initializeGL()
   // The final two are near and far clipping planes of 0.5 and 10
   m_cam.setShape(45.0f,(float)720.0/576.0f,0.05f,350.0f);
 
-  m_terrain = new ngl::Obj("resources/models/terrain_02.obj");
+  m_terrain = new ngl::Obj("resources/models/terrain_01.obj");
   m_terrain->createVAO();
 
   // get the VBO instance and draw the built in teapot
