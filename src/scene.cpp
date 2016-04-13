@@ -222,7 +222,7 @@ std::vector<vec3> scene::calcPath(actor *_a, navPoint *_start, navPoint *_end)
   std::vector<astarNode> closedList;
 
   //Add the start node to the closed list.
-  closedList.push_back({_start, 0.0f, mag(_start->getPos() - _end->getPos()), nullptr});
+  //closedList.push_back({_start, 0.0f, mag(_start->getPos() - _end->getPos()), nullptr});
   openList.push_back({_start, 0.0f, mag(_start->getPos() - _end->getPos()), nullptr});
 
   bool endFound = false;
@@ -230,6 +230,8 @@ std::vector<vec3> scene::calcPath(actor *_a, navPoint *_start, navPoint *_end)
   bool once = true;
   while((openList.size() > 0 or once) and !endFound)
   {
+    astarNode expandingNode = openList.back();
+
     //Loop through the neighbours of the node at the end of the open list (i.e. node with the lowest f cost.)
     for(auto &i : openList.back().m_node->m_neighbours)
     {
@@ -253,7 +255,6 @@ std::vector<vec3> scene::calcPath(actor *_a, navPoint *_start, navPoint *_end)
           alreadyOnOpenList = true;
         }
       }
-
       //If the node is not already on the open list, insert it in the proper place.
       if(!alreadyOnOpenList)
       {
@@ -262,7 +263,7 @@ std::vector<vec3> scene::calcPath(actor *_a, navPoint *_start, navPoint *_end)
         vec3 goalPos = _end->getPos();
         vec3 diff = nodePos - goalPos;
 
-        float cost = closedList.back().m_cost + mag(i->getPos() - closedList.back().m_node->getPos()) * (1 / i->m_weight);
+        float cost = expandingNode.m_cost + mag(i->getPos() - expandingNode.m_node->getPos()) * (1 / i->m_weight);
         float dist = mag(i->getPos() - _end->getPos());
         //float dist = 1.0f * (fabs(diff.m_x) + fabs(diff.m_y + fabs(diff.m_z))) + (1.4f - 2.0f) * fmin(diff.m_x, diff.m_y);
 
@@ -273,13 +274,14 @@ std::vector<vec3> scene::calcPath(actor *_a, navPoint *_start, navPoint *_end)
           if(k->m_cost + k->m_dist < cost + dist)
           {
             //Insert at k an a-star node, containing:
-            openList.insert(k, {i, cost, dist, closedList.back().m_node});
+            openList.insert(k, {i, cost, dist, expandingNode.m_node});
+
             addAtEnd = false;
             break;
           }
         }
         //If the f cost has NOT been beaten, just stick it on the end of the open list.
-        if(addAtEnd) openList.push_back({i, cost, dist, closedList.back().m_node});
+        if(addAtEnd) openList.push_back({i, cost, dist, expandingNode.m_node});
       }
       //If the node IS already on the open list and it is better than the current node, calculate costs, and move it to the right place.
       else
@@ -288,7 +290,7 @@ std::vector<vec3> scene::calcPath(actor *_a, navPoint *_start, navPoint *_end)
         float dist = mag(closedList.back().m_node->getPos() - _end->getPos());
         if(dist > entry->m_dist)
         {
-          entry->m_parent = closedList.back().m_parent;
+          entry->m_parent = expandingNode.m_node;
 
           //Move entry to the correct place.
           astarNode temp = *entry;
@@ -297,9 +299,7 @@ std::vector<vec3> scene::calcPath(actor *_a, navPoint *_start, navPoint *_end)
           {
             if(j->m_cost + j->m_dist < temp.m_cost + temp.m_dist)
             {
-              std::cout << "pre insert" << std::endl;
               openList.insert(j, temp);
-              std::cout << "post insert" << std::endl;
               break;
             }
           }
@@ -307,39 +307,43 @@ std::vector<vec3> scene::calcPath(actor *_a, navPoint *_start, navPoint *_end)
       }
       once = false;
     }
-    //std::cout << "p2" << std::endl;
-    closedList.push_back(openList.back());
+
+    closedList.push_back(expandingNode);
     if(closedList.back().m_node == _end) endFound = true;
-    openList.pop_back();
+
+    for(auto i = openList.begin(); i != openList.end(); ++i)
+    {
+      if(i->m_parent == expandingNode.m_parent and i->m_node == expandingNode.m_node)
+      {
+        openList.erase(i);
+        break;
+      }
+    }
   }
-std::cout << "p3" << std::endl;
   //Step backwards through the closed list, from child to parent, and add to the final vector.
   std::vector<navPoint*> reversed;
   reversed.push_back(closedList.back().m_node);
   auto cur = closedList.back();
   while(cur.m_node != _start)
   {
-    //std::cout << "pre-for" << std::endl;
     navPoint * toSearch = cur.m_parent;
     for(size_t i = 0; i < closedList.size(); ++i)
     {
-      //std::cout << "check" << std::endl;
       if(closedList[i].m_node == toSearch)
       {
-        //std::cout << "MATCH!" << std::endl;
         cur = closedList[i];
         reversed.push_back(cur.m_node);
         break;
       }
     }
   }
-std::cout << "p4" << std::endl;
+
   reverse(reversed.begin(), reversed.end());
 
   for(auto &i : reversed)
   {
     _a->addWaypoint(i->m_pos);
   }
-std::cout << "p5" << std::endl;
+
   return _a->getWaypoints();
 }
