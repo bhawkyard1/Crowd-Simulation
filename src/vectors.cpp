@@ -287,9 +287,9 @@ vec2 unit(vec2 vec)
 
 vec3 unit(vec3 vec)
 {
-    float m = invMag(vec);
+    float m = mag(vec);
 
-    if(m != 0) return vec * m;
+    if(m != 0) return vec / m;
     return {0,0,0};
 }
 

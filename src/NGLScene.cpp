@@ -101,7 +101,7 @@ void NGLScene::initializeGL()
   m_pathpts = m_sim.addActor(&pt);
   std::cout << "len of pathpts is " << m_pathpts.size() << std::endl;
 
-  for(int i = 0; i < 0; ++i)
+  for(int i = 0; i < 1000; ++i)
   {
     std::cout << "Actor " << i << std::endl;
     navPoint pt = m_sim.getNavPoint(rand() % m_sim.getNavPoints()->size());
@@ -209,7 +209,6 @@ void NGLScene::paintGL()
 
   ngl::ShaderLib * shader = ngl::ShaderLib::instance();
   shader->use("diffuse");
-  shader->setRegisteredUniform("inColour", ngl::Vec4(0.1f, 0.1f, 0.1f, 1.0f));
 
   // Rotation based on the mouse position for our global transform
   ngl::Mat4 rotX;
@@ -230,7 +229,8 @@ void NGLScene::paintGL()
   for(auto &i : *m_sim.getActors())
   {
     float yadd = fabs(sin(rad(g_globalTime) + rad(i.offset()))) * 0.1f;
-
+    std::array<float, 4> col = i.getCol();
+    shader->setRegisteredUniform("inColour", ngl::Vec4(col[0], col[1], col[2], col[3]));
     m_transform.setPosition(i.getPos().m_x, i.getPos().m_y + 0.4f + yadd, i.getPos().m_z);
     loadMatricesToShader();
     prim->draw("capsule");

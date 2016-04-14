@@ -11,6 +11,13 @@ actor::actor(vec3 _pos)
     m_index = 0;
     m_maxSpeed = randFloat(0.5f, 2.0f);
     m_stepOffset = randFloat(rad(0.0f), rad(360.0f));
+
+    m_col = {
+      randFloat(0.0f, 1.0f),
+      randFloat(0.0f, 1.0f),
+      randFloat(0.0f, 1.0f),
+      1.0f
+    };
 }
 
 void actor::update(float _dt)
@@ -44,24 +51,11 @@ void actor::update(float _dt)
 
 void actor::accelerate(vec3 _dir)
 {
-    //float projectedSpeed = magns(getVel() + _dir);
-
+    //std::cout << "PASS: " << _dir.m_x << ", " << _dir.m_y << ", " << _dir.m_z << std::endl;
+    //std::cout << "PRE: " << getPos().m_x << ", " << getPos().m_y << ", " << getPos().m_z << std::endl;
     float drag = clamp(magns(getVel()) / sqr(m_maxSpeed), 0.0f, 1.0f);
-    //std::cout << "accel call " << drag << ", " << _dir.m_x << ", " << _dir.m_y << ", " << _dir.m_z << std::endl;
     addVel( -getVel() * drag );
-
+    //std::cout << "DRAG: " << getPos().m_x << ", " << getPos().m_y << ", " << getPos().m_z << std::endl;
     addVel(_dir);
-    //If entity will speed up, AND be over max speed, truncate (to max speed).
-    /*if(projectedSpeed > magns(getVel()) and projectedSpeed > sqr(m_maxSpeed))
-    {
-        projectedSpeed = sqrt(projectedSpeed);
-        float toAdd = m_maxSpeed - projectedSpeed;
-        addVel(_dir * toAdd);
-        //std::cout << "Adding : " << (_dir * toAdd).m_x << ", " << (_dir * toAdd).m_y << ", " << (_dir * toAdd).m_z << " now at " << getVel().m_x << ", " << getVel().m_y << std::endl;
-    }
-    else
-    {
-        addVel(_dir);
-        //std::cout << "Adding : " << _dir.m_x << ", " << _dir.m_y << ", " << _dir.m_z << " now at " << getVel().m_x << ", " << getVel().m_y << std::endl;
-    }*/
+    //std::cout << "POST: " << getPos().m_x << ", " << getPos().m_y << ", " << getPos().m_z << std::endl << std::endl;
 }

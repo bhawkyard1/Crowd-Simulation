@@ -21,6 +21,7 @@ void scene::update(float _dt)
   for(auto &i : m_actors) ents.push_back(&i);
   aabb box = enclose(ents);
   broadPhase(ents, box, 0);
+  narrowPhase();
 }
 
 void scene::draw(float dt)
@@ -54,6 +55,30 @@ void scene::broadPhase(std::vector<actor *> _ents, aabb _box, short lvl)
     for(auto &i : boxes)
     {
       broadPhase(_ents, i, ++lvl);
+    }
+  }
+}
+
+void scene::narrowPhase()
+{
+  for(auto &i : m_partitions)
+  {
+    if(i.size() == 0) continue;
+
+    vec3 averagePosition = {0.0f, 0.0f, 0.0f};
+    for(auto &actor : i)
+    {
+      averagePosition += actor->getPos();
+    }
+    averagePosition = averagePosition / static_cast<float>(i.size());
+
+    for(auto &actor : i)
+    {
+      vec3 diff = actor->getPos() - averagePosition;
+      float dist = mag(diff);
+      if(dist > 0.0f) diff = diff / sqr(dist);
+      else diff = {0.0f, 0.0f, 0.0f};
+      actor->accelerate(diff);
     }
   }
 }
@@ -227,9 +252,8 @@ std::vector<vec3> scene::calcPath(actor *_a, navPoint *_start, navPoint *_end)
   openList.push_back({_start, 0.0f, mag(_start->getPos() - _end->getPos()), nullptr});
 
   bool endFound = false;
-  //std::cout << "p0" << std::endl;
-  bool once = true;
-  while((openList.size() > 0 or once) and !endFound)
+
+  while(openList.size() > 0 and !endFound)
   {
     astarNode expandingNode = openList.back();
 
@@ -305,7 +329,6 @@ std::vector<vec3> scene::calcPath(actor *_a, navPoint *_start, navPoint *_end)
           }
         }
       }
-      once = false;
     }
 
     closedList.push_back(expandingNode);

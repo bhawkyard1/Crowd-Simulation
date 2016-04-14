@@ -2,7 +2,7 @@
 #define ACTOR_HPP
 
 #include <cwchar>
-
+#include <array>
 #include <vector>
 #include "vectors.hpp"
 
@@ -17,6 +17,7 @@ class actor: public base
   std::vector<vec3> m_waypoints;
   size_t m_index;
   float m_stepOffset;
+  std::array<float, 4> m_col;
 public:
   actor(vec3 _pos);
   void update(float _dt);
@@ -27,6 +28,7 @@ public:
   void accelerate(vec3 _dir);
   float offset() {return m_stepOffset;}
   float getMaxSpeed() {return m_maxSpeed;}
+  std::array<float, 4> getCol() {return m_col;}
 };
 
 #endif
