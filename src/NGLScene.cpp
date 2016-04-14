@@ -101,7 +101,7 @@ void NGLScene::initializeGL()
   m_pathpts = m_sim.addActor(&pt);
   std::cout << "len of pathpts is " << m_pathpts.size() << std::endl;
 
-  for(int i = 0; i < 1000; ++i)
+  for(int i = 0; i < 100; ++i)
   {
     std::cout << "Actor " << i << std::endl;
     navPoint pt = m_sim.getNavPoint(rand() % m_sim.getNavPoints()->size());
