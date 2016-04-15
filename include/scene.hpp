@@ -42,8 +42,8 @@ public:
   navPoint getNavPoint(size_t i) {return m_navCloud[i];}
   void getNearestNavPoint(vec3 _p, kdtree *_inputNode, navPoint ** _best, std::vector<std::pair<kdtree *, bool> > *_path);
 
-  std::vector<vec3> addActor(navPoint * _p);
-  std::vector<vec3> calcPath(actor * _a, navPoint *_start, navPoint *_end);
+  std::vector<std::pair<vec3, vec3> > addActor(navPoint * _p);
+  std::vector< std::pair<vec3, vec3> > calcPath(actor * _a, navPoint *_start, navPoint *_end);
   void tracePath(actor * _a, navPoint *_start, navPoint *_end);
 };
 

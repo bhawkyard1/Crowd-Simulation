@@ -7,6 +7,7 @@
 struct navPoint
 {
   vec3 m_pos;
+  vec3 m_normal;
   std::vector<navPoint *> m_neighbours;
   float m_weight;
 

@@ -20,6 +20,7 @@ void scene::update(float _dt)
     std::vector<actor *> ents;
     for(auto &i : m_actors) ents.push_back(&i);
     aabb box = enclose(ents);
+    m_partitions.clear();
     broadPhase(ents, box, 0);
     narrowPhase();
 }
@@ -43,7 +44,7 @@ void scene::broadPhase(std::vector<actor *> _ents, aabb _box, short lvl)
         }
     }
 
-    if(lvl > 10 or count < 8)
+    if(lvl > 10 or count > 8)
     {
         //Return
         m_partitions.push_back(pass);
@@ -126,6 +127,9 @@ void scene::generateNavConnections(const float _threshold)
         for(auto &j : m_navCloud)
         {
             if(&j == &i) continue;
+            //Do not connect for gradients of > 50%
+            if(unit(i.m_pos - j.m_pos).m_y > 0.5f) continue;
+
             if(temp.size() < con)
             {
                 temp.push_back(&j);
@@ -219,7 +223,7 @@ kdtree * scene::genKDT(kdtree * _cur, std::vector<navPoint *> _ents, int _axis, 
 }
 
 
-std::vector<vec3> scene::addActor(navPoint * _p)
+std::vector< std::pair<vec3, vec3> > scene::addActor(navPoint * _p)
 {
     //std::cout << "yo! " << _p->m_pos.m_x << ", " << _p->m_pos.m_y << ", " << _p->m_pos.m_z << std::endl;
     actor a (_p->m_pos);
@@ -228,12 +232,12 @@ std::vector<vec3> scene::addActor(navPoint * _p)
     a.setTPos(npt->getPos());
     m_actors.push_back(a);
 
-    std::vector<vec3> ret = calcPath(&m_actors.back(), _p, npt);
+    std::vector< std::pair<vec3, vec3> > ret = calcPath(&m_actors.back(), _p, npt);
     //std::cout << "yo! " << m_actors.back().getPos().m_x << ", " << m_actors.back().getPos().m_y << ", " << m_actors.back().getPos().m_z << std::endl;
     return ret;
 }
 
-std::vector<vec3> scene::calcPath(actor *_a, navPoint *_start, navPoint *_end)
+std::vector< std::pair<vec3, vec3> > scene::calcPath(actor *_a, navPoint *_start, navPoint *_end)
 {
     std::cout << "p1" << std::endl;
     //Nodes to consider.
@@ -364,7 +368,7 @@ std::vector<vec3> scene::calcPath(actor *_a, navPoint *_start, navPoint *_end)
 
     for(auto &i : reversed)
     {
-        _a->addWaypoint(i->m_pos);
+        _a->addWaypoint(i->m_pos, i->m_normal);
     }
 
     return _a->getWaypoints();

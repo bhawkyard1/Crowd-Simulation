@@ -97,8 +97,12 @@ void NGLScene::initializeGL()
 
   constructNavCloud();
   std::cout << "here" << std::endl;
+
   navPoint pt = m_sim.getNavPoint(rand() % m_sim.getNavPoints()->size());
-  m_pathpts = m_sim.addActor(&pt);
+  std::vector<std::pair<vec3,vec3>> pathpts = m_sim.addActor(&pt);
+  m_pathpts.clear();
+  for(auto &i : pathpts) m_pathpts.push_back(i.first);
+
   std::cout << "len of pathpts is " << m_pathpts.size() << std::endl;
 
   for(int i = 0; i < 100; ++i)
@@ -386,10 +390,14 @@ void NGLScene::keyPressEvent(QKeyEvent *_event)
     // show windowed
   case Qt::Key_N : showNormal(); break;
   case Qt::Key_R :
+  {
     m_sim.getActors()->clear();
-    m_pathpts = m_sim.addActor( &gen );
+    std::vector<std::pair<vec3,vec3>> pathpts = m_sim.addActor( &gen );
+    m_pathpts.clear();
+    for(auto &i : pathpts) m_pathpts.push_back(i.first);
     packPath();
     break;
+  }
   default : break;
   }
   // finally update the GLWindow and re-draw
@@ -404,7 +412,13 @@ void NGLScene::constructNavCloud()
   for(size_t i = 0; i < verts.size(); ++i)
   {
     //Low weighting = bad
-    navPoint pt = {{verts[i].m_x, verts[i].m_y, verts[i].m_z},{}, (normals[i].m_y - 0.9f) * 100.0f};
+    navPoint pt = {
+      {verts[i].m_x, verts[i].m_y, verts[i].m_z},
+      {normals[i].m_x, normals[i].m_y, normals[i].m_z},
+      {},
+      (normals[i].m_y - 0.9f) * 100.0f
+    };
+
     m_sim.addPoint(pt);
   }
 

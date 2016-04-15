@@ -14,7 +14,7 @@ class actor: public base
   float m_maxSpeed;
   vec3 m_travelDir;
   vec3 m_tPos;
-  std::vector<vec3> m_waypoints;
+  std::vector< std::pair<vec3, vec3> > m_waypoints;
   size_t m_index;
   float m_stepOffset;
   std::array<float, 4> m_col;
@@ -22,13 +22,14 @@ public:
   actor(vec3 _pos);
   void update(float _dt);
   void setTPos(vec3 _p) {m_tPos = _p;}
-  void addWaypoint(const vec3 _p) {m_waypoints.push_back(_p);}
-  std::vector<vec3> getWaypoints() {return m_waypoints;}
+  void addWaypoint(const vec3 _p, const vec3 _n) {m_waypoints.push_back({_p, _n});}
+  std::vector< std::pair<vec3, vec3> > getWaypoints() {return m_waypoints;}
   void updateDir();
   void accelerate(vec3 _dir);
   float offset() {return m_stepOffset;}
   float getMaxSpeed() {return m_maxSpeed;}
   std::array<float, 4> getCol() {return m_col;}
+  void physUpdate();
 };
 
 #endif
