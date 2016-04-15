@@ -77,7 +77,7 @@ void actor::physUpdate()
   //float ydepth = (dotProd1(normal, aPos) - (normal.m_x * point.m_x) - (normal.m_z * point.m_z)) / normal.m_y;
   //float ydepth = aPos.m_y - ( normal.m_x * (point.m_x - aPos.m_x) + normal.m_z * (point.m_z - aPos.m_z) ) / normal.m_y;
   float ydepth = dotProd1(normal, (point - aPos));
-  std::cout << "ydepth : " << ydepth << std::endl;
+  //std::cout << "ydepth : " << ydepth << std::endl;
 
   if(ydepth > 0.0f)
   {

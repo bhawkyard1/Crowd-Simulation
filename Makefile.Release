@@ -2969,15 +2969,17 @@ obj\AABB.obj: src\AABB.cpp include/AABB.hpp \
 		include/vectors.hpp \
 		include/util.hpp
 
-obj\actor.obj: src\actor.cpp include/util.hpp \
-		include/AABB.hpp \
+obj\actor.obj: src\actor.cpp include/common.hpp \
 		include/vectors.hpp \
+		include/util.hpp \
+		include/AABB.hpp \
 		include/actor.hpp \
 		include/base.hpp
 
 obj\base.obj: src\base.cpp 
 
-obj\common.obj: src\common.cpp include/common.hpp
+obj\common.obj: src\common.cpp include/common.hpp \
+		include/vectors.hpp
 
 obj\kdtree.obj: src\kdtree.cpp include/kdtree.hpp \
 		include/vectors.hpp \

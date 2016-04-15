@@ -170,6 +170,7 @@ void NGLScene::initializeGL()
   glVertexAttribPointer( 1, 3, GL_FLOAT, GL_FALSE, 0, 0 );
   glBindVertexArray(0);
 
+  glGenVertexArrays(1, &m_navPathVAO);
 
   packPath();
 
@@ -445,7 +446,6 @@ void NGLScene::timerEvent(QTimerEvent *_event)
 
 void NGLScene::packPath()
 {
-  glGenVertexArrays(1, &m_navPathVAO);
   glBindVertexArray(m_navPathVAO);
 
   std::vector<ngl::Vec3> stuff;
