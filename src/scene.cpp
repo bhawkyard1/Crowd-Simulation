@@ -15,6 +15,16 @@ void scene::update(float _dt)
     for(auto &i : m_actors)
     {
         i.update(_dt);
+        kdtree colDatInp;
+        nearestNeighbour(&m_tree, i.getPos(), &colDatInp);
+
+        if(i.recalcCol())
+        {
+            i.setCollisionData(
+            {colDatInp.m_node->m_pos,
+                        colDatInp.m_node->m_normal}
+                        );
+        }
     }
 
     std::vector<actor *> ents;
@@ -75,7 +85,7 @@ void scene::narrowPhase()
                 vec3 diff = (a->getPos() - b->getPos());
                 float dist = mag(diff);
 
-                diff = diff / sqr(dist);
+                diff = diff / sqr(sqr(dist));
 
                 a->accelerate(diff);
             }

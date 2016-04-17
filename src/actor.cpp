@@ -19,6 +19,8 @@ actor::actor(vec3 _pos)
     randFloat(0.0f, 1.0f),
     1.0f
   };
+
+  m_recalcPhys = true;
 }
 
 void actor::update(float _dt)
@@ -50,6 +52,8 @@ void actor::update(float _dt)
   updatePos(_dt);
 
   physUpdate();
+
+  if(magns(m_collisionData.first - getPos()) > 2.0f) m_recalcPhys = true;
 }
 
 void actor::accelerate(vec3 _dir)
@@ -68,8 +72,11 @@ void actor::accelerate(vec3 _dir)
 void actor::physUpdate()
 {
   addVel(g_gravity);
-  vec3 point = m_waypoints[m_index].first;
-  vec3 normal = m_waypoints[m_index].second;
+  //vec3 point = m_waypoints[m_index].first;
+  //vec3 normal = m_waypoints[m_index].second;
+
+  vec3 point = m_collisionData.first;
+  vec3 normal = m_collisionData.second;
   vec3 aPos = getPos();
 
   //std::cout << "normal : " << normal.m_x << ", " << normal.m_y << ", " << normal.m_z << std::endl;

@@ -14,7 +14,9 @@ class actor: public base
   float m_maxSpeed;
   vec3 m_travelDir;
   vec3 m_tPos;
+  bool m_recalcPhys;
   std::vector< std::pair<vec3, vec3> > m_waypoints;
+  std::pair<vec3, vec3>  m_collisionData;
   size_t m_index;
   float m_stepOffset;
   std::array<float, 4> m_col;
@@ -30,6 +32,9 @@ public:
   float getMaxSpeed() {return m_maxSpeed;}
   std::array<float, 4> getCol() {return m_col;}
   void physUpdate();
+  void setCollisionData(std::pair<vec3, vec3> _data) {m_collisionData = _data; m_recalcPhys = false;}
+  std::pair<vec3, vec3> getCollisionData() {return m_collisionData;}
+  bool recalcCol() {return m_recalcPhys;}
 };
 
 #endif
